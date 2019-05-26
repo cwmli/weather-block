@@ -1,0 +1,66 @@
+
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherBlock</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./material.min.css">
+    <script defer src="./material.min.js"></script>
+    <style>
+      .mdl-card {
+        margin-bottom: 20px
+      }
+      .mdl-card__supporting-text {
+        width: 95%
+      }
+      .mdl-textfield {
+        width: 100%
+      }
+      .section--center {
+        max-width: 620px;
+        margin-top: 20px
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout-icon"></div>
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout__title">WeatherBlock</span>
+          <div class="mdl-layout-spacer"></div>
+          <!-- <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="#">Wifi</a>
+          </nav> -->
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <section class="section--center mdl-grid mdl-shadow--2dp">
+          <div class="mdl-cell mdl-cell--center mdl-cell--12-col-desktop mdl-cell--4-col-tablet">
+            <div class="mdl-card__supporting-text">
+              <h4>Connect to a network</h4>
+              <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="sample3">
+                  <label class="mdl-textfield__label" for="sample3">SSID</label>
+                </div>
+              </form>
+              <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="password" id="sample3">
+                  <label class="mdl-textfield__label" for="sample3">Password</label>
+                </div>
+              </form>                    
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+              <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                Confirm
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
