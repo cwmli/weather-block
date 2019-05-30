@@ -5,35 +5,9 @@
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
+#include "Server.h"
+#include "RouteHandlers.h"
 #include "config.h"
-
-ESP8266WebServer server(80);
-
-String getContentType(String filename) {
-  if (filename.endsWith(".html")) return "text/html";
-  else if (filename.endsWith(".css")) return "text/css";
-  else if (filename.endsWith(".js")) return "application/javascript";
-  else if (filename.endsWith(".ico")) return "image/x-icon";
-  return "text/plain";
-}
-
-bool handleRoute(String path) {
-  if (path.endsWith("/")) path += "index.html"; 
-
-  String targetpath = WWW_DIR;
-  targetpath += path;
-  
-  String contentType = getContentType(path);
-  Serial.println("\tLooking for: " + targetpath);
-  if (SPIFFS.exists(targetpath)) {
-    File file = SPIFFS.open(targetpath, "r");
-    size_t sent = server.streamFile(file, contentType);
-    file.close();
-    return true;
-  }
-  Serial.println("\tFile Not Found");
-  return false; 
-}
 
 void SoftAPSetup::init() {
   delay(1000);
@@ -55,8 +29,11 @@ void SoftAPSetup::init() {
   
   SPIFFS.begin();
 
+  server.on('/setwifi', HTTP_POST, RouteHandlers::postWiFi);
+  server.on('/wifistatus', HTTP_GET, RouteHandlers::getPollWiFi);
+
   server.onNotFound([]() {
-    if (!handleRoute(server.uri())) {
+    if (!RouteHandlers::getDefault(server.uri())) {
       server.send(404, "text/plain", "404: Not Found");
     }
   });
