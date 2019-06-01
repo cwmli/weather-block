@@ -1,25 +1,12 @@
-#include <ESP8266WiFi.h>
+#include <Arduino.h>
+#include <SoftAPSetup.h>
 
-const char * SSID = "dlink-8898";
-const char * password = "dbjxk22065";
+SoftAPSetup apSetup;
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println();
-
-  WiFi.begin(SSID, password);
-
-  Serial.print("Connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println();
-
-  Serial.print("Connected, IP Addr: ");
-  Serial.println(WiFi.localIP());
+  apSetup.init();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  apSetup.update();
 }
