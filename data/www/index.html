@@ -4,8 +4,9 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherBlock</title>
-    <link rel="stylesheet" href="./wbstyles.css">
-    <script defer src="./all.min.js"></script>
+    <link rel="stylesheet" href="./wbstyles.min.css">
+    <script defer src="./fontawesome.min.js"></script>
+    <script defer src="./solid.min.js"></script>
   </head>
   <body>
     <section class="hero is-fullheight">
@@ -25,33 +26,73 @@
           <div class="columns is-centered">
             <div class="column is-half box">
               <div class="field">
-                <p class="subtitle is-4 has-text-centered">Connect to a network</p>
+                <p id="box-title" class="subtitle is-4 has-text-centered">Connect to a network</p>
               </div>
-              <div class="field">
+              <div id="conn-bar" class="field is-hidden">
+                <progress class="progress is-medium is-primary" max="100" />
+              </div>
+              <iframe class="is-hidden" name="tmp_iframe"></iframe>
+              <form id="setwifiForm" action="/setwifi" method="post" target="tmp_iframe">
+                <div class="field">
                   <p class="control has-icons-left">
-                    <input class="input" type="text" placeholder="SSID">
+                    <input id="ssid" class="input" name="ssid" type="text" placeholder="SSID">
                     <span class="icon has-text-primary is-small is-left">
                       <i class="fas fa-wifi"></i>
                     </span>
                   </p>
-              </div>
-              <div class="field">
-                <p class="control has-icons-left">
-                  <input class="input" type="password" placeholder="Password">
-                  <span class="icon has-text-primary is-small is-left">
-                    <i class="fas fa-lock"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field is-grouped is-grouped-right">
-                <div class="control ">
-                  <button class="button is-link">Confirm</button>
                 </div>
-              </div>
+                <div class="field">
+                  <p class="control has-icons-left">
+                    <input id="password" class="input" name="password" type="password" placeholder="Password">
+                    <span class="icon has-text-primary is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+                <div class="field is-grouped is-grouped-right">
+                  <div class="control ">
+                    <input id="setwifiSubmit" type="submit" class="button is-link" value="Confirm" onclick="formSubmit()" />
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <script>
+      function formSubmit() {
+        let ssid = document.getElementById("ssid").value;
+        let password = document.getElementById("password").value;
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/setwifi", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("ssid=" + ssid + "&password=" + password);
+
+        document.getElementById("conn-bar").classList.remove("is-hidden");
+        document.getElementById("box-title").innerHTML = "Connecting to network, you will be disconnected from weatherblock";
+
+        let inputs = document.getElementsByClassName("input");
+        for (i = 0; i < inputs.length; i++) {
+          inputs[i].setAttribute("disabled", true);
+        }
+
+        document.getElementById("setwifiSubmit").setAttribute("disabled", true);
+
+        let wifiStatePolling = setInterval(() => {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              if (this.responseText == "true") {
+                window.location.reload();
+              }
+            }
+          };
+          xhttp.open("GET", "/wifistatus", true);
+          xhttp.send();
+        }, 3000);
+      }
+    </script>
   </body>
 </html>

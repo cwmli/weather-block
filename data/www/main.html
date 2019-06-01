@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherBlock</title>
+    <link rel="stylesheet" href="./wbstyles.min.css">
+    <script defer src="./fontawesome.min.js"></script>
+    <script defer src="./solid.min.js"></script>
+  </head>
+  <body>
+    <section class="hero is-fullheight">
+      <div class="hero-head">
+        <nav class="navbar has-background-link" role="navigation" aria-label="main navigation">
+            <div class="navbar-menu">
+              <div class="navbar-brand">
+                <div class="navbar-item has-text-white title is-3">
+                  WeatherBlock
+                </div>
+              </div>
+            </div>
+          </nav>
+      </div>
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-full box">
+              <div class="columns">
+                <div class="column">
+                  <span class="has-text-weight-bold">Connected to: </span><span id="ssid"></span>
+                  <a onclick="disconnectWifi()" class="button is-small is-danger is-rounded">
+                    <span class="icon is-small">
+                      <i class="fas fa-ban"></i>
+                    </span>
+                  </a>
+                </div>
+                <div class="column">
+                  <span class="has-text-weight-bold">Local IP: </span><span id="ipaddr"></span>
+                </div>
+                <div class="column">
+                  <span class="has-text-weight-bold">Subnet Mask: </span><span id="subnet"></span>
+                </div>
+                <div class="column">
+                  <span class="has-text-weight-bold">Gateway IP: </span><span id="gateway"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var wifidetails = JSON.parse(this.responseText);
+          
+          document.getElementById("ssid").innerHTML = wifidetails.ssid;
+          document.getElementById("ipaddr").innerHTML = wifidetails.ipaddr;
+          document.getElementById("subnet").innerHTML = wifidetails.subnet;
+          document.getElementById("gateway").innerHTML = wifidetails.gateway;
+        }
+      };
+      xhttp.open("GET", "/wifidetails", true);
+      xhttp.send();
+
+      function disconnectWifi() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/wifidisconnect", true);
+        xhttp.send();
+      }
+    </script>
+  </body>
+</html>

@@ -1,18 +1,17 @@
 #include "SoftAPSetup.h"
 
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
-#include "Server.h"
 #include "RouteHandlers.h"
 #include "config.h"
 
 void SoftAPSetup::init() {
   delay(1000);
   Serial.begin(115200);
-
+  WiFi.disconnect(true);
+  delay(1000);
   WiFi.softAP(WB_SSID, WB_PWD);
 
   IPAddress wbIP = WiFi.softAPIP();
@@ -29,8 +28,10 @@ void SoftAPSetup::init() {
   
   SPIFFS.begin();
 
-  server.on('/setwifi', HTTP_POST, RouteHandlers::postWiFi);
-  server.on('/wifistatus', HTTP_GET, RouteHandlers::getPollWiFi);
+  server.on("/setwifi", HTTP_POST, RouteHandlers::postWiFi);
+  server.on("/wifistatus", HTTP_GET, RouteHandlers::getPollWiFi);
+  server.on("/wifidetails", HTTP_GET, RouteHandlers::getWiFiDetails);
+  server.on("/wifidisconnect", HTTP_POST, RouteHandlers::postDisconnectWiFi);
 
   server.onNotFound([]() {
     if (!RouteHandlers::getDefault(server.uri())) {

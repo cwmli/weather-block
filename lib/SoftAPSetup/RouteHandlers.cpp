@@ -1,9 +1,11 @@
 #include "RouteHandlers.h"
 
 #include <ESP8266WiFi.h>
+#include <FS.h>
 
-#include "Server.h"
 #include "config.h"
+
+ESP8266WebServer server(80);
 
 // ContentType helper
 String getContentType(String filename) {
@@ -15,7 +17,13 @@ String getContentType(String filename) {
 }
 
 bool RouteHandlers::getDefault(String path) {
-  if (path.endsWith("/")) path += "index.html"; 
+  if (path.endsWith("/")) {
+    if (WiFi.status() == WL_CONNECTED) {
+      path += "main.html";
+    } else {
+      path += "index.html";
+    }
+  }
 
   String targetpath = WWW_DIR;
   targetpath += path;
@@ -34,18 +42,50 @@ bool RouteHandlers::getDefault(String path) {
 
 void RouteHandlers::postWiFi() {
   if (!server.hasArg("ssid") || !server.hasArg("password")
-      || server.arg("ssid") == NULL || servr.arg("password") == NULL) {
+      || server.arg("ssid") == NULL || server.arg("password") == NULL) {
+    Serial.println("Invalid set network connection request");
     server.send(400, "text/plain", "400: Invalid Request"); 
   } else {
-    WiFi.begin(server.arg("ssid"), server.arg("password"));
+    Serial.println("Connecting to network");
     server.send(200, "text/plain", "200: Set WiFi SSID and PW");
+    WiFi.begin(server.arg("ssid"), server.arg("password"));
   }
 }
 
-void RouteHandlers::getPollWifi() {
+void RouteHandlers::getPollWiFi() {
   if (WiFi.status() != WL_CONNECTED) {
-    server.send(200, "text/plain", "Connecting to WiFi");
+    Serial.println("Not connected");
+    server.send(200, "text/plain", "false");
   } else {
-    server.send(200, "text/plain", "Connected");
+    Serial.println("Connected");
+    server.send(200, "text/plain", "true");
   }
+}
+
+void RouteHandlers::getWiFiDetails() {
+  String ssid = WiFi.SSID();
+  String ipaddr = WiFi.localIP().toString();
+  String subnet = WiFi.subnetMask().toString();
+  String gateway = WiFi.gatewayIP().toString();
+
+  String jsonString = "{\"ssid\": \"";
+  jsonString += ssid;
+  jsonString += "\", \"ipaddr\": \"";
+  jsonString += ipaddr;
+  jsonString += "\", \"subnet\": \"";
+  jsonString += subnet;
+  jsonString += "\", \"gateway\": \"";
+  jsonString += gateway;
+  jsonString += "\"}";
+
+  server.send(200, "text/plain", jsonString);
+}
+
+void RouteHandlers::postDisconnectWiFi() {
+  server.send(200, "text/plain", "true");
+  WiFi.disconnect(true);
+  Serial.println("Disconnected");
+  delay(1000);
+  Serial.println("Starting SoftAP");
+  WiFi.softAP(WB_SSID, WB_PWD);
 }
