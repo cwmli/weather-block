@@ -8,12 +8,13 @@
 #define COLUMNS     8
 
 // LED GRID INDICES
-static const PROGMEM uint8_t LED_INDICES[ROWS][COLUMNS] = {{53, 26, 47, 25, 41, 24, 35, 23, 29},
-                                                           {18, 48, 19, 42, 20, 36, 21, 30, 22},
-                                                           {52, 17, 46, 16, 40, 15, 34, 14, 28},
-                                                           { 9, 49, 10, 43, 11, 37, 12, 31, 13},
-                                                           {51,  8, 45,  7, 39,  6, 33,  5, 27},
-                                                           { 0, 50,  1, 44,  2, 38,  3, 32,  4}};
+static const PROGMEM uint8_t LED_INDICES[ROWS][COLUMNS] = {{ 0,  1,  2,  3,  4,  5,  6,  7},
+                                                           { 8,  9, 10, 11, 11, 12, 14, 15},
+                                                           {16, 17, 18, 19, 20, 21, 22, 23},
+                                                           {24, 25, 26, 27, 28, 29, 30, 31},
+                                                           {32, 33, 34, 35, 36, 37, 38, 39},
+                                                           {40, 41, 42, 43, 44, 45, 46, 47},
+                                                           {48, 49, 50, 51, 52, 53, 54, 55}};
 
 #define FONT_X        3
 #define FONT_Y        4
@@ -38,8 +39,6 @@ static const PROGMEM byte NUMBERS[10][NUM_Y] = {{B11, B11, B11, B11}, {B01, B11,
                                                 {B11, B01, B11, B11}, {B01, B11, B11, B01}, {B11, B10, B01, B11},
                                                 {B11, B10, B11, B11}, {B11, B01, B01, B01}, {B11, B11, B00, B11},
                                                 {B11, B11, B01, B01}};
-
-static uint8_t activeLeds[ROWS][COLUMNS];
 
 // index(row, col) returns the corresponding index given
 // a specified row and col returns -1 if invalid row col vals

@@ -1,5 +1,7 @@
 #include "GridControl.h"
 
+uint8_t activeLeds[ROWS][COLUMNS];
+
 uint8_t gridIndex(uint8_t row, uint8_t col) {
   // check if valid row col values
   if (row >= 0 && row < ROWS && col >= 0 && col < COLUMNS) {

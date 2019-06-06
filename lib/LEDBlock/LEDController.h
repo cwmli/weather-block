@@ -5,7 +5,7 @@
 #include <FastLED.h>
 
 #define NUM_LEDS           64
-#define LED_DATA           3
+#define LED_DATA           0
 #define LED_TYPE           WS2811
 #define CLR_ORDR           GRB
 
@@ -29,11 +29,14 @@ class LEDController {
   uint8_t cycle;
   uint16_t speed;
 
+  int testIndex = 0;
+
 public:
   LEDController() {
     currentBrightness = DEFAULT_BRIGHTNESS;
-    currentStyle = 0;
-    speed = 250;
+    currentStyle = 3;
+    color = CRGB::White;
+    speed = 1000;
   }
 
   void init();
@@ -59,6 +62,10 @@ private:
   void breathe();
 
   void rainbow();
+
+  void test();
+
+  void text(char* string, bool scroll, int scrollSpeed);
 
   CRGB wheel(byte pos);
 };

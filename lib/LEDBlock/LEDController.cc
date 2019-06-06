@@ -1,4 +1,5 @@
 #include "LEDController.h"
+#include "GridControl.h"
 
 void LEDController::init() {
   FastLED.addLeds<LED_TYPE, LED_DATA, CLR_ORDR>(leds, NUM_LEDS)
@@ -35,7 +36,7 @@ void LEDController::setState(uint8_t state) {
     styleTimer = millis();
   } 
   
-  if (currentStyle == 2) {
+  if (currentStyle == 3) {
     cycle = 0;
   }
 }
@@ -59,8 +60,12 @@ void LEDController::update() {
     fill_solid(leds, NUM_LEDS, color);
   } else if (currentStyle == 1) {
     breathe();
-  } else {
+  } else if (currentStyle == 2) {
     rainbow();
+  } else if (currentStyle == 3) {
+    text("SOYBEAN", true, 500);
+  } else {
+    test();
   }
 
   FastLED.show();
@@ -83,6 +88,54 @@ void LEDController::rainbow() {
   if (millis() - styleTimer > speed / 5) {
     cycle = cycle + 1;
     styleTimer = millis();
+  }
+}
+
+void LEDController::test() {
+
+  if (testIndex > NUM_LEDS) {
+    testIndex = 0;
+  }
+
+  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  leds[testIndex] = color;
+
+  if (millis() - styleTimer > speed) {
+    testIndex = testIndex + 1;
+    styleTimer = millis();
+  }
+}
+
+void LEDController::text(char* string, bool scroll, int scrollSpeed) {
+  static int startCol = scroll ? COLUMNS : 0;
+	static unsigned long lastScrollUpdate;
+
+  resetActiveLeds();
+
+  int len = strlen(string);
+	for (int i = 0; i < len; i++) {
+		if (string[i] == 32) {
+			continue;
+		}
+
+		fillChar(2, startCol + (i * (FONT_X + 1)), string[i]);
+  }
+
+  if (scroll && millis() - lastScrollUpdate > scrollSpeed) {
+		lastScrollUpdate = millis();
+
+		startCol -= 1;
+	}
+
+  for (int c = 0; c < COLUMNS; c++) {
+    for (int r = 0; r < ROWS; r++) {
+      if (getActiveLed(r, c) == 1) {
+        leds[gridIndex(r, c)] = color;
+      }
+      else {
+        leds[gridIndex(r, c)] = CRGB::Black;
+      }
+    }
   }
 }
 
