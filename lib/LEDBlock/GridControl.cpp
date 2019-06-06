@@ -64,11 +64,10 @@ void fillChar(uint8_t row, uint8_t col, char c) {
   // row and col can be out of index so long as parts of c is still in the 
   // led grid
 
-  const byte base = B100;
+  const byte base = B10000;
   // retrieve bin representing char c
   byte binChar;
 
-  // fonts are displayed as 3x4
   for (int y = 0; y < FONT_Y; y++) {
     if (c - CHAR_OFFSET < 26 || c - CHAR_OFFSET >= 0) {
       binChar = pgm_read_byte(&CHARACTERS[c - CHAR_OFFSET][y]);
@@ -89,18 +88,17 @@ void fillChar(uint8_t row, uint8_t col, char c) {
   }
 }
 
-void fillNum(uint8_t row, uint8_t col, uint8_t i) {
+void fillNum(uint8_t row, uint8_t col, char c) {
   // row and col can be out of index so long as parts of c is still in the 
   // led grid
 
-  const byte base = B10;
+  const byte base = B100;
   // retrieve bin representing int i
   byte binNum;
 
-  // NUMS are displayed as 2x4
   for (int y = 0; y < NUM_Y; y++) {
-    if (i < 10 || i >= 0) {
-      binNum = pgm_read_byte(&NUMBERS[i][y]);
+    if (c - NUM_OFFSET < 10 || c - NUM_OFFSET >= 0) {
+      binNum = pgm_read_byte(&NUMBERS[c - NUM_OFFSET][y]);
       for (int x = 0; x < NUM_X; x++) {
         // check if this led should be active
         if ((binNum & base) > 0) {

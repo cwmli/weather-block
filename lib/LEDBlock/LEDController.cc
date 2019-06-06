@@ -63,7 +63,7 @@ void LEDController::update() {
   } else if (currentStyle == 2) {
     rainbow();
   } else if (currentStyle == 3) {
-    text("SOYBEAN", true, 500);
+    text("SOYBEAN 123456789", true, 500);
   } else {
     test();
   }
@@ -113,12 +113,19 @@ void LEDController::text(char* string, bool scroll, int scrollSpeed) {
   resetActiveLeds();
 
   int len = strlen(string);
+  int offset = startCol;
 	for (int i = 0; i < len; i++) {
 		if (string[i] == 32) {
 			continue;
 		}
 
-		fillChar(2, startCol + (i * (FONT_X + 1)), string[i]);
+    if (string[i] >= 48 && string[i] <= 57) {
+      fillNum(1, offset, string[i]);
+      offset += NUM_X + 1;
+    } else {
+		  fillChar(1, offset, string[i]);
+      offset += FONT_X + 1;
+    }
   }
 
   if (scroll && millis() - lastScrollUpdate > scrollSpeed) {
