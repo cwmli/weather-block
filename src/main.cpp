@@ -1,18 +1,18 @@
 #include <Arduino.h>
-#include <SoftAPSetup.h>
+#include <WeatherBlockAP.h>
 #include <LEDController.h>
 
-SoftAPSetup apSetup;
+WeatherBlockAP wbAP;
 LEDController controller;
 
 void setup() {
-  apSetup.init();
+  wbAP.init();
   controller.init();
 
   pinMode(LED_DATA, OUTPUT);
 }
 
 void loop() {
-  apSetup.update();
+  wbAP.update();
   controller.update();
 }

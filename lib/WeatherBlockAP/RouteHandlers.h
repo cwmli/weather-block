@@ -9,10 +9,13 @@ namespace RouteHandlers {
 
   bool getDefault(String path);
 
+  // WiFi setup routes
   void postWiFi();
   void getPollWiFi();
   void getWiFiDetails();
   void postDisconnectWiFi();
+
+  // API control routes
 }
 
 #endif
