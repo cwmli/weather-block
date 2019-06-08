@@ -4,12 +4,12 @@
 
 #include <FastLED.h>
 
-#define NUM_LEDS           64
+#define NUM_LEDS           192
 #define LED_DATA           0
 #define LED_TYPE           WS2811
 #define CLR_ORDR           GRB
 
-#define DEFAULT_BRIGHTNESS 16
+#define DEFAULT_BRIGHTNESS 4
 #define MAX_BRIGHTNESS     64
 
 class CRGB;
@@ -36,7 +36,7 @@ public:
     currentBrightness = DEFAULT_BRIGHTNESS;
     currentStyle = 3;
     color = CRGB::White;
-    speed = 1000;
+    speed = 250;
   }
 
   void init();
