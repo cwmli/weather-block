@@ -1,13 +1,22 @@
 #ifndef APIDATA_H
 #define APIDATA_H
 
+#include <map>
 #include <time.h>
 
 struct APIData {
   String name;
   String url;
-  long refreshTime;
-  long lastRefreshed;
+  bool isActive;
+  unsigned long refreshTime;
+  unsigned long lastRefreshed;
+
+  std::map<String, String> data;
+  // parseRules: 
+  // <Key, Value>
+  // value: array of size 4, where [lengthOfValue, xPos, yPos, isNumber]
+  std::map<String, std::array<int, 4>> parseRules;
+
 
   APIData() {}
 

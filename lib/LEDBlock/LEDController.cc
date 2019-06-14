@@ -63,12 +63,31 @@ void LEDController::update() {
   } else if (currentStyle == 2) {
     rainbow();
   } else if (currentStyle == 3) {
-    text("ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789", true, 125);
+    for (uint8_t i = 0; i < elementCount; ++i) {
+      TextElement e = elements[i];
+      text(e.string, e.x, e.y, e.scroll, e.scrollSpeed);
+    }
   } else {
     test();
   }
 
   FastLED.show();
+}
+
+void LEDController::resetTextElements() {
+  elementCount = 0;
+}
+
+void LEDController::addTextElement(TextElement e) {
+  elements[elementCount] = e;
+  elementCount++;
+}
+
+void LEDController::removeTextElement(uint8_t index) {
+  for (uint8_t i = index; i < MAX_ELEMENTS - 1; ++i) {
+    elements[i] = elements[i + 1];
+  }
+  elementCount--;
 }
 
 void LEDController::breathe() {
@@ -106,13 +125,13 @@ void LEDController::test() {
   }
 }
 
-void LEDController::text(char* string, bool scroll, int scrollSpeed) {
-  static int startCol = scroll ? COLUMNS : 0;
+void LEDController::text(String& string, int& x, int& y, bool& scroll, int& scrollSpeed) {
+  static int startCol = scroll ? COLUMNS : x;
 	static unsigned long lastScrollUpdate;
 
   resetActiveLeds();
 
-  int len = strlen(string);
+  int len = string.length();
   int offset = startCol;
 	for (int i = 0; i < len; i++) {
 		if (string[i] == 32) {
@@ -121,10 +140,10 @@ void LEDController::text(char* string, bool scroll, int scrollSpeed) {
 		}
 
     if (string[i] >= 48 && string[i] <= 57) {
-      fillNum(1, offset, string[i]);
+      fillNum(y, offset, string[i]);
       offset += NUM_X + 1;
     } else {
-		  fillChar(1, offset, string[i]);
+		  fillChar(y, offset, string[i]);
       offset += FONT_X + 1;
     }
   }

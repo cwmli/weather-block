@@ -3,6 +3,7 @@
 #define LEDCONTROLLER_H
 
 #include <FastLED.h>
+#include "TextElement.h"
 
 #define NUM_LEDS           192
 #define LED_DATA           0
@@ -11,6 +12,8 @@
 
 #define DEFAULT_BRIGHTNESS 4
 #define MAX_BRIGHTNESS     64
+
+#define MAX_ELEMENTS 10
 
 class CRGB;
 
@@ -30,6 +33,9 @@ class LEDController {
   uint16_t speed;
 
   int testIndex = 0;
+
+  uint8_t elementCount = 0;
+  TextElement elements[MAX_ELEMENTS];
 
 public:
   LEDController() {
@@ -57,6 +63,12 @@ public:
 
   void update();
 
+  void resetTextElements();
+
+  void addTextElement(TextElement e);
+
+  void removeTextElement(uint8_t index);
+
 private:
 
   void breathe();
@@ -65,7 +77,7 @@ private:
 
   void test();
 
-  void text(char* string, bool scroll, int scrollSpeed);
+  void text(String& string, int& x, int& y, bool& scroll, int& scrollSpeed);
 
   CRGB wheel(byte pos);
 };
