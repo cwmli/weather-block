@@ -133,9 +133,9 @@ void WeatherBlockAP::tryUpdateAPI() {
         Serial.printf("[INFO] %s: %s\n", it->first.c_str(), temp.c_str());
         if (it->second[3]) {
           int itemp = temp.toInt();
-          controller.addTextElement(TextElement(String(itemp), it->second[1], it->second[2], false, 0));
+          APIList[i].data[it->first] = itemp;
         } else {
-          controller.addTextElement(TextElement(String(temp), it->second[1], it->second[2], false, 0));
+          APIList[i].data[it->first] = temp;
         }
       }
     } else {
