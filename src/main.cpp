@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <WeatherBlockAP.h>
-#include <LEDController.h>
 
 WeatherBlockAP wbAP;
 
