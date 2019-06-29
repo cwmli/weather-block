@@ -12,6 +12,7 @@ namespace Elements {
     int y;
     bool scroll;
     int scrollSpeed;
+    unsigned long lastScrollUpdate;
 
     Generic(int x, int y, bool s, int spd) : x(x), y(y), scroll(s), scrollSpeed(spd) {};
 

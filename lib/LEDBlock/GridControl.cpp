@@ -69,7 +69,7 @@ void fillChar(uint8_t row, uint8_t col, char c) {
   byte binChar;
 
   for (int y = 0; y < FONT_Y; y++) {
-    if (c - UCHAR_OFFSET < 26 || c - UCHAR_OFFSET >= 0) {
+    if (c - UCHAR_OFFSET < 26 && c - UCHAR_OFFSET >= 0) {
       binChar = pgm_read_byte(&UCHARACTERS[c - UCHAR_OFFSET][y]);
 
       for (int x = 0; x < FONT_X; x++) {
@@ -80,7 +80,7 @@ void fillChar(uint8_t row, uint8_t col, char c) {
 
         binChar = binChar << 1;
       }
-    } else if (c - LCHAR_OFFSET < 26 || c - LCHAR_OFFSET >= 0) {
+    } else if (c - LCHAR_OFFSET < 26 && c - LCHAR_OFFSET >= 0) {
       binChar = pgm_read_byte(&LCHARACTERS[c - LCHAR_OFFSET][y]);
 
       byte tbase = base;

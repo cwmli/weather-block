@@ -27,7 +27,7 @@ public:
 
   void draw(LEDController * controller);
 
-  void setAPI(String name, String url, long refresh, std::map<String, std::array<int, 4>> parseRules);
+  void setAPI(String name, String url, long refresh, std::map<String, std::array<int, 3>> parseRules);
 
   void resetAPI();
 

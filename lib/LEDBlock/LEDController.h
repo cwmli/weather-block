@@ -55,7 +55,7 @@ public:
 
   void reset();
 
-  void text(String& string, int& x, int& y, bool& scroll, int& scrollSpeed);
+  void text(String& string, int& x, int& y);
 
 private:
 

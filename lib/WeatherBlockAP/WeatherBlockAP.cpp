@@ -63,9 +63,10 @@ void WeatherBlockAP::init() {
   canvas[0].setAPI("DarkSky", 
          "https://api.darksky.net/forecast/API_KEY/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
          60 * 60,
-         std::map<String, std::array<int, 4>> {
-           {"temperature", std::array<int, 4>{5, 1, 1, 1}},
+         std::map<String, std::array<int, 3>> {
+           {"temperature", std::array<int, 3>{11, 1, 1}},
          });
+  canvas[0].addElement(new Elements::Text("c", 19, 1, false, 0));
   
   server.begin();
   Serial.println("HTTP server started");

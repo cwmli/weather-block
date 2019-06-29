@@ -14,8 +14,8 @@ struct APIData {
   std::map<String, String> data;
   // parseRules: 
   // <Key, Value>
-  // value: array of size 4, where [lengthOfValue, xPos, yPos, isNumber]
-  std::map<String, std::array<int, 4>> parseRules;
+  // value: array of size 3, where [xPos, yPos, isNumber]
+  std::map<String, std::array<int, 3>> parseRules;
 
 
   APIData() {}

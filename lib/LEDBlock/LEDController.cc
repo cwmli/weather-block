@@ -46,12 +46,9 @@ void LEDController::reset() {
   resetActiveLeds();
 }
 
-void LEDController::text(String& string, int& x, int& y, bool& scroll, int& scrollSpeed) {
-  static int startCol = scroll ? COLUMNS : x;
-	static unsigned long lastScrollUpdate;
-
+void LEDController::text(String& string, int& x, int& y) {
   int len = string.length();
-  int offset = startCol;
+  int offset = x;
 	for (int i = 0; i < len; i++) {
 		if (string[i] == 32) {
       offset += SPACE_W;
@@ -67,11 +64,6 @@ void LEDController::text(String& string, int& x, int& y, bool& scroll, int& scro
     }
   }
 
-  if (scroll && millis() - lastScrollUpdate > scrollSpeed) {
-		lastScrollUpdate = millis();
-
-		startCol -= 1;
-	}
 
   for (int c = 0; c < COLUMNS; c++) {
     for (int r = 0; r < ROWS; r++) {

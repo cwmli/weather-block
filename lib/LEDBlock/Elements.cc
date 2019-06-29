@@ -3,7 +3,12 @@
 namespace Elements {
 
   void Text::draw(LEDController * controller) {
-    controller->text(string, x, y, scroll, scrollSpeed);
+    if (scroll && millis() - lastScrollUpdate > scrollSpeed) {
+      lastScrollUpdate = millis();
+
+      x -= 1;
+    }
+    controller->text(string, x, y);
   }
 
   void Image::draw(LEDController * controller){
