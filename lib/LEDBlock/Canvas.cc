@@ -10,12 +10,12 @@ void Canvas::update() {
   APIElements.clear();
   for (auto const &i : apiobj.parseRules) {
     // i.first contains the key (String)
-    // i.second contains an array of size 3 ([xPos, yPos, isNumber])
+    // i.second contains an APIParseRule object
     APIElements.push_back(
       new Elements::Text(
         apiobj.data[i.first], 
-        i.second[0],
-        i.second[1],
+        i.second.x,
+        i.second.y,
         false,
         0
       )
@@ -50,7 +50,7 @@ void Canvas::draw(LEDController * controller) {
   }
 }
 
-void Canvas::setAPI(String name, String url, long refresh, std::map<String, std::array<int, 3>> parseRules) {
+void Canvas::setAPI(String name, String url, long refresh, std::map<String, APIParseRule> parseRules) {
   apiobj.isActive = true;
   apiobj.name = name;
   apiobj.url = url;
@@ -86,13 +86,13 @@ void Canvas::updateAPI(long curtime) {
       String payload = https.getString();
       Serial.printf("[HTTPSRequest] payload: \n%s\n", payload.c_str());
       // Have to do some ghetto stuff
-      std::map<String, std::array<int, 3>> rules = apiobj.parseRules;
+      std::map<String, APIParseRule> rules = apiobj.parseRules;
       for (auto it = rules.begin(); it != rules.end(); it++) {
         int pos = payload.indexOf(it->first);
         int end = payload.indexOf(",", pos);
         String temp = payload.substring(pos + it->first.length() + 2, end);
         Serial.printf("[INFO] %s: %s\n", it->first.c_str(), temp.c_str());
-        if (it->second[2]) {
+        if (it->second.type == APIValueType::NUMBER) {
           int itemp = temp.toInt();
           apiobj.data[it->first] = itemp;
         } else {

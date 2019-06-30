@@ -4,6 +4,8 @@
 #include <map>
 #include <time.h>
 
+#include "APIParseRule.h"
+
 struct APIData {
   String name;
   String url;
@@ -12,10 +14,7 @@ struct APIData {
   unsigned long lastRefreshed;
 
   std::map<String, String> data;
-  // parseRules: 
-  // <Key, Value>
-  // value: array of size 3, where [xPos, yPos, isNumber]
-  std::map<String, std::array<int, 3>> parseRules;
+  std::map<String, APIParseRule> parseRules;
 
 
   APIData() {}

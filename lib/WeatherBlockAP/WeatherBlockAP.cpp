@@ -46,25 +46,12 @@ void WeatherBlockAP::init() {
     }
   });
 
-  // addAPI("DarkSky", 
-  //        "https://api.darksky.net/forecast/API_KEY/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
-  //        60 * 60,
-  //        std::map<String, std::array<int, 4>> {
-  //          {"temperature", std::array<int, 4>{5, 1, 1, 1}},
-  //        });
-  // addAPI("OpenWeatherMap", 
-  //        "https://api.openweathermap.org/data/2.5/weather?q=mississauga&APPID=07b1e3b39857252f4324e71d9fad58ff&units=metric", 
-  //        60 * 60,
-  //        std::map<String, int> {
-  //           {"temp", 5},
-  //        });
-
   // --- TEST SETUP API ---
   canvas[0].setAPI("DarkSky", 
-         "https://api.darksky.net/forecast/API_KEY/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
+         "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
          60 * 60,
-         std::map<String, std::array<int, 3>> {
-           {"temperature", std::array<int, 3>{11, 1, 1}},
+         std::map<String, APIParseRule> {
+           {"temperature", {11, 1, APIValueType::NUMBER}},
          });
   canvas[0].addElement(new Elements::Text("c", 19, 1, false, 0));
   

@@ -11,7 +11,7 @@ namespace Elements {
     controller->text(string, x, y);
   }
 
-  void Image::draw(LEDController * controller){
+  void Icon::draw(LEDController * controller){
 
   }
   

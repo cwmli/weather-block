@@ -27,12 +27,12 @@ namespace Elements {
     void draw(LEDController * controller);
   };
 
-  struct Image : Generic {
+  struct Icon : Generic {
     int w;
     int h;
     int** img;
 
-    Image(int x, int y, bool s, int spd, int w, int h, int** img) : Generic(x, y, s, spd), w(w), h(h), img(img) {};
+    Icon(int x, int y, bool s, int spd, int w, int h, int** img) : Generic(x, y, s, spd), w(w), h(h), img(img) {};
 
     void draw(LEDController * controller);
   };
