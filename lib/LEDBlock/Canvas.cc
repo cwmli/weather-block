@@ -8,18 +8,36 @@ void Canvas::update() {
     delete *i;
   }
   APIElements.clear();
+  
   for (auto const &i : apiobj.parseRules) {
     // i.first contains the key (String)
     // i.second contains an APIParseRule object
-    APIElements.push_back(
-      new Elements::Text(
-        apiobj.data[i.first], 
-        i.second.x,
-        i.second.y,
-        false,
-        0
-      )
-    );
+    Elements::Generic * elem;
+    switch (i.second.type) {
+      case APIValueType::ICON:
+        elem = new Elements::Icon(
+          i.second.x,
+          i.second.y,
+          false,
+          0,
+          0,
+          0,
+          nullptr
+        );
+        break;
+      default:
+        /* Default to Elements::Text */
+        elem = new Elements::Text(
+          apiobj.data[i.first], 
+          i.second.x,
+          i.second.y,
+          false,
+          0
+        );
+        break;
+    }
+
+    APIElements.push_back(elem);
   }
 }
 

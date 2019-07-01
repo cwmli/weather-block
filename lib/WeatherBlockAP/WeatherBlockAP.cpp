@@ -52,6 +52,7 @@ void WeatherBlockAP::init() {
          60 * 60,
          std::map<String, APIParseRule> {
            {"temperature", {11, 1, APIValueType::NUMBER}},
+           {"icon", {1, 1, APIValueType::ICON}}
          });
   canvas[0].addElement(new Elements::Text("c", 19, 1, false, 0));
   
