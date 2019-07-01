@@ -3,6 +3,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
+#include "Icons.h"
+
 void Canvas::update() {
   for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
     delete *i;
@@ -20,9 +22,7 @@ void Canvas::update() {
           i.second.y,
           false,
           0,
-          0,
-          0,
-          nullptr
+          apiobj.data[i.first]
         );
         break;
       default:
@@ -108,14 +108,12 @@ void Canvas::updateAPI(long curtime) {
       for (auto it = rules.begin(); it != rules.end(); it++) {
         int pos = payload.indexOf(it->first);
         int end = payload.indexOf(",", pos);
-        String temp = payload.substring(pos + it->first.length() + 2, end);
-        Serial.printf("[INFO] %s: %s\n", it->first.c_str(), temp.c_str());
         if (it->second.type == APIValueType::NUMBER) {
-          int itemp = temp.toInt();
-          apiobj.data[it->first] = itemp;
+          apiobj.data[it->first] = payload.substring(pos + it->first.length() + 2, end).toInt();
         } else {
-          apiobj.data[it->first] = temp;
+          apiobj.data[it->first] = payload.substring(pos + it->first.length() + 3, end - 1);
         }
+        Serial.printf("[INFO] %s: %s\n", it->first.c_str(), apiobj.data[it->first].c_str());
       }
     } else {
       Serial.printf("An error occurred while updating %s\n", apiobj.name.c_str());

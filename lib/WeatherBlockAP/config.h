@@ -7,7 +7,7 @@
 
 #define WWW_DIR "/www"
 
-#define API_LIMIT 10
+#define API_LIMIT 3
 
 #define NTP_POOL_URL "pool.ntp.org"
 #define NTP_DEFAULT_TIMEOFFSET -18000 //GMT -5

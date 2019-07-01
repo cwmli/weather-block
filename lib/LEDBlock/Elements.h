@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 #include "LEDController.h"
+#include "Icons.h"
 
 namespace Elements {
 
@@ -16,6 +17,8 @@ namespace Elements {
 
     Generic(int x, int y, bool s, int spd) : x(x), y(y), scroll(s), scrollSpeed(spd) {};
 
+    virtual ~Generic() {};
+
     virtual void draw(LEDController * controller) {};
   };
 
@@ -24,15 +27,17 @@ namespace Elements {
 
     Text(String str, int x, int y, bool s, int spd) : Generic(x, y, s, spd), string(str) {};
 
+    ~Text() {};
+
     void draw(LEDController * controller);
   };
 
   struct Icon : Generic {
-    int w;
-    int h;
-    int** img;
+    String iconStr;
 
-    Icon(int x, int y, bool s, int spd, int w, int h, int** img) : Generic(x, y, s, spd), w(w), h(h), img(img) {};
+    Icon(int x, int y, bool s, int spd, String iconStr) : Generic(x, y, s, spd), iconStr(iconStr) {};
+
+    ~Icon() {};
 
     void draw(LEDController * controller);
   };

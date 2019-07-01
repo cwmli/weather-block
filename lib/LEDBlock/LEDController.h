@@ -3,13 +3,14 @@
 #define LEDCONTROLLER_H
 
 #include <FastLED.h>
+#include <Icons.h>
 
 #define NUM_LEDS           192
 #define LED_DATA           0
 #define LED_TYPE           WS2811
 #define CLR_ORDR           GRB
 
-#define DEFAULT_BRIGHTNESS 4
+#define DEFAULT_BRIGHTNESS 16
 #define MAX_BRIGHTNESS     64
 
 #define MAX_ELEMENTS 10
@@ -56,6 +57,8 @@ public:
   void reset();
 
   void text(String& string, int& x, int& y);
+
+  void icon(const Icons::Base * icon, int& x, int& y);
 
 private:
 

@@ -65,13 +65,10 @@ void LEDController::text(String& string, int& x, int& y) {
   }
 
 
-  for (int c = 0; c < COLUMNS; c++) {
-    for (int r = 0; r < ROWS; r++) {
+  for (int c = x; c < offset; c++) {
+    for (int r = y; r < FONT_Y + 1; r++) {
       if (getActiveLed(r, c) == 1) {
         leds[gridIndex(r, c)] = color;
-      }
-      else {
-        leds[gridIndex(r, c)] = CRGB::Black;
       }
     }
   }
@@ -88,5 +85,18 @@ CRGB LEDController::wheel(byte pos) {
   else {
     pos -= 170;
     return CRGB(0, pos * 3, 255 - pos * 3);
+  }
+}
+
+void LEDController::icon(const Icons::Base * icon, int& x, int& y) {
+  for (int h = 0; h < ICON_HEIGHT; h++) {
+    for (int w = 0; w < ICON_WIDTH; w++) {
+      if (icon->cdata[h][w] == 0) {
+        continue;
+      }
+
+      setActiveLed(y + h, x + w);
+      leds[gridIndex(y + h, x + w)] = icon->palette[icon->cdata[h][w] - 1];
+    }
   }
 }
