@@ -12,10 +12,10 @@ namespace Elements {
     int x;
     int y;
     bool scroll;
-    int scrollSpeed;
+    unsigned int scrollSpeed;
     unsigned long lastScrollUpdate;
 
-    Generic(int x, int y, bool s, int spd) : x(x), y(y), scroll(s), scrollSpeed(spd) {};
+    Generic(int x, int y, bool s, unsigned int spd) : x(x), y(y), scroll(s), scrollSpeed(spd) {};
 
     virtual ~Generic() {};
 

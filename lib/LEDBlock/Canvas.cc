@@ -109,7 +109,8 @@ void Canvas::updateAPI(long curtime) {
         int pos = payload.indexOf(it->first);
         int end = payload.indexOf(",", pos);
         if (it->second.type == APIValueType::NUMBER) {
-          apiobj.data[it->first] = payload.substring(pos + it->first.length() + 2, end).toInt();
+          float temp = payload.substring(pos + it->first.length() + 2, end).toFloat();
+          apiobj.data[it->first] = (int) round(temp);
         } else {
           apiobj.data[it->first] = payload.substring(pos + it->first.length() + 3, end - 1);
         }
