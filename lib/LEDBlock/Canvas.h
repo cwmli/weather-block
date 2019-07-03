@@ -33,7 +33,7 @@ public:
 
   APIData getAPIData();
 
-  void updateAPI(long curtime);
+  void updateAPI(unsigned long curtime);
 };
 
 #endif

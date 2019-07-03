@@ -3,6 +3,9 @@
 
 #include <ESP8266WebServer.h>
 
+#include "Canvas.h"
+#include "config.h"
+
 extern ESP8266WebServer server;
 
 namespace RouteHandlers {
@@ -16,6 +19,7 @@ namespace RouteHandlers {
   void postDisconnectWiFi();
 
   // API control routes
+  void getAPIInfo(Canvas canvases[API_LIMIT]);
 }
 
 #endif

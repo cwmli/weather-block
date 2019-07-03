@@ -84,7 +84,7 @@ APIData Canvas::getAPIData() {
   return apiobj;
 }
 
-void Canvas::updateAPI(long curtime) {
+void Canvas::updateAPI(unsigned long curtime) {
     if (!apiobj.isActive || curtime - apiobj.lastRefreshed < apiobj.refreshTime) {
       return;
     }

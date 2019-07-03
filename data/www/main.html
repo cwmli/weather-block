@@ -62,12 +62,15 @@
               <table class="table is-fullwidth">
                 <thead>
                   <tr>
+                    <th>Name</th>
                     <th>URL</th>
-                    <th>Last Refresh</th>
+                    <th>Active?</th>
+                    <th>Refreshes every (in minutes)</th>
+                    <th>Last refreshed</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="apitable">
                 </tbody>
               </table>
             </div>
@@ -88,6 +91,45 @@
         }
       };
       xhttp.open("GET", "/wifidetails", true);
+      xhttp.send();
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var apidetails = JSON.parse(this.responseText);
+          
+          apidetails.forEach(function(apiobj) {
+            var tr = document.createElement("tr");
+            var tdname = document.createElement("td");
+            tdname.append(apiobj.name);
+            tr.append(tdname);
+
+            var tdurl = document.createElement("td");
+            tdurl.style.wordBreak = "break-all";
+            tdurl.append(apiobj.url);
+            tr.append(tdurl);
+
+            var tdactive = document.createElement("td");
+            tdactive.append(apiobj.isActive);
+            tr.append(tdactive);
+
+            var tdrefresh = document.createElement("td");
+            tdrefresh.append(apiobj.refreshes);
+            tr.append(tdrefresh);
+
+            var tdlastrefresh = document.createElement("td");
+            tdlastrefresh.append(apiobj.lastRefresh);
+            tr.append(tdlastrefresh);
+
+            var tdactions = document.createElement("td");
+            tdactions.append("");
+            tr.append(tdactions);
+
+            document.getElementById("apitable").appendChild(tr);
+          });
+        }
+      };
+      xhttp.open("GET", "/apiinfo", true);
       xhttp.send();
 
       function disconnectWifi() {

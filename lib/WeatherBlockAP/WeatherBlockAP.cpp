@@ -40,6 +40,8 @@ void WeatherBlockAP::init() {
   server.on("/wifidetails", HTTP_GET, RouteHandlers::getWiFiDetails);
   server.on("/wifidisconnect", HTTP_POST, RouteHandlers::postDisconnectWiFi);
 
+  server.on("/apiinfo", HTTP_GET, [&](){ RouteHandlers::getAPIInfo(canvas); });
+
   server.onNotFound([]() {
     if (!RouteHandlers::getDefault(server.uri())) {
       server.send(404, "text/plain", "404: Not Found");

@@ -2,6 +2,9 @@
 
 #include <ESP8266WiFi.h>
 #include <FS.h>
+#include <ctime>
+
+#include "APIData.h"
 
 #include "config.h"
 
@@ -88,4 +91,35 @@ void RouteHandlers::postDisconnectWiFi() {
   delay(1000);
   Serial.println("Starting SoftAP");
   WiFi.softAP(WB_SSID, WB_PWD);
+}
+
+void RouteHandlers::getAPIInfo(Canvas canvases[API_LIMIT]) {
+  String obj = "[";
+  for (uint8_t i = 0; i < API_LIMIT; i++) {
+    APIData data = canvases[i].getAPIData();
+
+    char timestr[32];
+    std::time_t secsSinceEpoch = data.lastRefreshed;
+    Serial.println("Times");
+    Serial.println(data.lastRefreshed);
+    Serial.println(secsSinceEpoch);
+    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R%p", std::localtime(&secsSinceEpoch));
+
+    String jsonString = i > 0 ? "," : "";
+    jsonString += "{\"name\": \"";
+    jsonString += data.name;
+    jsonString += "\", \"url\": \"";
+    jsonString += data.url;
+    jsonString += "\", \"isActive\": \"";
+    jsonString += data.isActive;
+    jsonString += "\", \"refreshes\": \"";
+    jsonString += data.refreshTime / 60; //in minutes
+    jsonString += "\", \"lastRefresh\": \"";
+    jsonString += timestr;
+    jsonString += "\"}";
+
+    obj += jsonString;
+  }
+  obj += "]";
+  server.send(200, "text/plain", obj);
 }
