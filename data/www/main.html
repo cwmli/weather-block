@@ -46,15 +46,8 @@
           </div>
           <hr />
           <div class="columns is-centered" style="margin-top: 1em;">
-            <div class="column is-four-fifths">
-              <h1 class="has-text-weight-bold is-size-5">APIs</h1>
-            </div>
             <div class="column">
-              <a onclick="" style="margin-left: 0.5em" class="button is-small is-primary is-rounded is-pulled-right">
-                <span class="icon is-small">
-                  <i class="fas fa-plus"></i>
-                </span>
-              </a>
+              <h1 class="has-text-weight-bold is-size-5">APIs</h1>
             </div>
           </div>
           <div class="columns">
@@ -98,34 +91,31 @@
         if (this.readyState == 4 && this.status == 200) {
           var apidetails = JSON.parse(this.responseText);
           
-          apidetails.forEach(function(apiobj) {
-            var tr = document.createElement("tr");
-            var tdname = document.createElement("td");
-            tdname.append(apiobj.name);
-            tr.append(tdname);
-
-            var tdurl = document.createElement("td");
-            tdurl.style.wordBreak = "break-all";
-            tdurl.append(apiobj.url);
-            tr.append(tdurl);
-
-            var tdactive = document.createElement("td");
-            tdactive.append(apiobj.isActive);
-            tr.append(tdactive);
-
-            var tdrefresh = document.createElement("td");
-            tdrefresh.append(apiobj.refreshes);
-            tr.append(tdrefresh);
-
-            var tdlastrefresh = document.createElement("td");
-            tdlastrefresh.append(apiobj.lastRefresh);
-            tr.append(tdlastrefresh);
-
-            var tdactions = document.createElement("td");
-            tdactions.append("");
-            tr.append(tdactions);
-
-            document.getElementById("apitable").appendChild(tr);
+          apidetails.forEach(function(apiobj, i) {
+            document.getElementById("apitable").insertAdjacentHTML("afterbegin",
+            `<tr><td>${apiobj.name}</td>
+              <td style='word-break: break-all'>${apiobj.url}</td>
+              <td>${apiobj.isActive}</td>
+              <td>${apiobj.refreshes}</td>
+              <td>${apiobj.lastRefresh}</td>
+              <td>
+                <a onclick='toggleActiveAPI(${i})' class="button is-small is-link is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-power-off"></i>
+                  </span>
+                </a>
+                <a onclick='resetAPI(${i})' class="button is-small is-danger is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-ban"></i>
+                  </span>
+                </a>
+                <a onclick='' class="button is-small is-primary is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-plus"></i>
+                  </span>
+                </a>
+              </td></tr>`
+            );
           });
         }
       };
@@ -136,6 +126,26 @@
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/wifidisconnect", true);
         xhttp.send();
+      }
+
+      function toggleActiveAPI(index) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+        }
+        xhttp.open("POST", "/apitoggle", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("index=" + index);        
+      }
+
+      function resetAPI(index) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+        }
+        xhttp.open("POST", "/apireset", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("index=" + index);        
       }
     </script>
   </body>

@@ -31,6 +31,8 @@ public:
 
   void resetAPI();
 
+  void toggleAPI();
+
   APIData getAPIData();
 
   void updateAPI(unsigned long curtime);

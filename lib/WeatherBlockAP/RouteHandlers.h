@@ -19,7 +19,9 @@ namespace RouteHandlers {
   void postDisconnectWiFi();
 
   // API control routes
-  void getAPIInfo(Canvas canvases[API_LIMIT]);
+  void getAPIInfo(Canvas * canvases);
+  void postRemoveAPI(Canvas * canvases);
+  void postToggleAPI(Canvas * canvases);
 }
 
 #endif

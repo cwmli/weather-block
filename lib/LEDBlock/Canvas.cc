@@ -78,10 +78,18 @@ void Canvas::setAPI(String name, String url, long refresh, std::map<String, APIP
 
 void Canvas::resetAPI() {
   apiobj.isActive = false;
+  apiobj.name = "";
+  apiobj.url = "";
+  apiobj.refreshTime = 0;
+  apiobj.parseRules = NULL;
 }
 
 APIData Canvas::getAPIData() {
   return apiobj;
+}
+
+void Canvas::toggleAPI() {
+  apiobj.isActive = !apiobj.isActive;
 }
 
 void Canvas::updateAPI(unsigned long curtime) {

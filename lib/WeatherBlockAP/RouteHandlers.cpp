@@ -93,7 +93,7 @@ void RouteHandlers::postDisconnectWiFi() {
   WiFi.softAP(WB_SSID, WB_PWD);
 }
 
-void RouteHandlers::getAPIInfo(Canvas canvases[API_LIMIT]) {
+void RouteHandlers::getAPIInfo(Canvas * canvases) {
   String obj = "[";
   for (uint8_t i = 0; i < API_LIMIT; i++) {
     APIData data = canvases[i].getAPIData();
@@ -121,4 +121,26 @@ void RouteHandlers::getAPIInfo(Canvas canvases[API_LIMIT]) {
   }
   obj += "]";
   server.send(200, "text/plain", obj);
+}
+
+void RouteHandlers::postRemoveAPI(Canvas * canvases) {
+  if (!server.hasArg("index") || server.arg("index") == NULL) {
+    Serial.println("Invalid index for API");
+    server.send(400, "text/plain", "400: Invalid Request");
+  } else {
+    Serial.printf("Removing API: %s", canvases[server.arg("index")].getAPIData().name);
+    canvases[server.arg("index")].resetAPI();
+    server.send(200, "text/plain", "200: Removed API");
+  }
+}
+
+void RouteHandlers::postToggleAPI(Canvas * canvases) {
+  if (!server.hasArg("index") || server.arg("index") == NULL) {
+    Serial.println("Invalid index for API");
+    server.send(400, "text/plain", "400: Invalid Request");
+  } else {
+    Serial.printf("Toggling active status for API: %s", canvases[server.arg("index")].getAPIData().name);
+    canvases[server.arg("index")].toggleAPI();
+    server.send(200, "text/plain", "200: Toggled active status for API");
+  }
 }
