@@ -99,11 +99,10 @@ void RouteHandlers::getAPIInfo(Canvas canvases[API_LIMIT]) {
     APIData data = canvases[i].getAPIData();
 
     char timestr[32];
-    std::time_t secsSinceEpoch = data.lastRefreshed;
-    Serial.println("Times");
-    Serial.println(data.lastRefreshed);
-    Serial.println(secsSinceEpoch);
-    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R%p", std::localtime(&secsSinceEpoch));
+    std::time_t secsSinceEpoch = (long) data.lastRefreshed;
+    struct std::tm ts;
+    ts = *std::localtime(&secsSinceEpoch);
+    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R%p", &ts);
 
     String jsonString = i > 0 ? "," : "";
     jsonString += "{\"name\": \"";
