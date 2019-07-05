@@ -81,7 +81,6 @@ void Canvas::resetAPI() {
   apiobj.name = "";
   apiobj.url = "";
   apiobj.refreshTime = 0;
-  apiobj.parseRules = NULL;
 }
 
 APIData Canvas::getAPIData() {

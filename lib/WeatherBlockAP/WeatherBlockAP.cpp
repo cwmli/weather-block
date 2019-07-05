@@ -42,7 +42,7 @@ void WeatherBlockAP::init() {
 
   server.on("/apiinfo", HTTP_GET, [&](){ RouteHandlers::getAPIInfo(canvas); });
   server.on("/apireset", HTTP_POST, [&](){ RouteHandlers::postRemoveAPI(canvas); });
-  server.on("/apitoggle", HTTP_POST, [&](){ RouteHandlers::postToggleAPI(canvas); })
+  server.on("/apitoggle", HTTP_POST, [&](){ RouteHandlers::postToggleAPI(canvas); });
 
   server.onNotFound([]() {
     if (!RouteHandlers::getDefault(server.uri())) {
@@ -85,6 +85,10 @@ void WeatherBlockAP::update() {
     Serial.println("WiFI connected: starting timeclient");
     timeClient.begin();
     isTimeclientRunning = true;
+  }
+
+  if (isTimeclientRunning) {
+    timeClient.update();
   }
 
   /* Update Canvas API Data */

@@ -92,7 +92,7 @@
           var apidetails = JSON.parse(this.responseText);
           
           apidetails.forEach(function(apiobj, i) {
-            document.getElementById("apitable").insertAdjacentHTML("afterbegin",
+            document.getElementById("apitable").insertAdjacentHTML("beforeend",
             `<tr><td>${apiobj.name}</td>
               <td style='word-break: break-all'>${apiobj.url}</td>
               <td>${apiobj.isActive}</td>

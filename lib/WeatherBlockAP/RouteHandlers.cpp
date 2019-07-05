@@ -128,8 +128,9 @@ void RouteHandlers::postRemoveAPI(Canvas * canvases) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
-    Serial.printf("Removing API: %s", canvases[server.arg("index")].getAPIData().name);
-    canvases[server.arg("index")].resetAPI();
+    int i = server.arg("index").toInt();
+    Serial.printf("Removing API: %s\n", canvases[i].getAPIData().name.c_str());
+    canvases[i].resetAPI();
     server.send(200, "text/plain", "200: Removed API");
   }
 }
@@ -139,8 +140,9 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
-    Serial.printf("Toggling active status for API: %s", canvases[server.arg("index")].getAPIData().name);
-    canvases[server.arg("index")].toggleAPI();
+    int i = server.arg("index").toInt();
+    Serial.printf("Toggling active status for API: %s\n", canvases[i].getAPIData().name.c_str());
+    canvases[i].toggleAPI();
     server.send(200, "text/plain", "200: Toggled active status for API");
   }
 }

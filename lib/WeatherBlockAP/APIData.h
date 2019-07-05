@@ -11,7 +11,7 @@ struct APIData {
   String url;
   bool isActive;
   unsigned long refreshTime;
-  unsigned long lastRefreshed;
+  unsigned long lastRefreshed = 0;
 
   std::map<String, String> data;
   std::map<String, APIParseRule> parseRules;
