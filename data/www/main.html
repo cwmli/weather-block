@@ -58,7 +58,7 @@
                     <th>Name</th>
                     <th>URL</th>
                     <th>Active?</th>
-                    <th>Refreshes every (in minutes)</th>
+                    <th>Refreshes</th>
                     <th>Last refreshed</th>
                     <th>Actions</th>
                   </tr>
@@ -94,9 +94,11 @@
           apidetails.forEach(function(apiobj, i) {
             document.getElementById("apitable").insertAdjacentHTML("beforeend",
             `<tr><td>${apiobj.name}</td>
-              <td style='word-break: break-all'>${apiobj.url}</td>
+              <td>
+                <textarea class="textarea has-fixed-size" readonly>${apiobj.url}</textarea>
+              </td>
               <td>${apiobj.isActive}</td>
-              <td>${apiobj.refreshes}</td>
+              <td>every ${apiobj.refreshes} minutes</td>
               <td>${apiobj.lastRefresh}</td>
               <td>
                 <a onclick='toggleActiveAPI(${i})' class="button is-small is-link is-rounded">
@@ -109,9 +111,9 @@
                     <i class="fas fa-ban"></i>
                   </span>
                 </a>
-                <a onclick='' class="button is-small is-primary is-rounded">
+                <a href='/apisettings?index=${i}' class="button is-small is-primary is-rounded">
                   <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-cog"></i>
                   </span>
                 </a>
               </td></tr>`
@@ -119,7 +121,7 @@
           });
         }
       };
-      xhttp.open("GET", "/apiinfo", true);
+      xhttp.open("GET", "/apiinfoall", true);
       xhttp.send();
 
       function disconnectWifi() {

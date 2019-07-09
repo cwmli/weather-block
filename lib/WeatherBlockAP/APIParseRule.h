@@ -3,7 +3,8 @@
 
 enum APIValueType {
   NUMBER,
-  ICON
+  ICON,
+  TEXT
 };
 
 struct APIParseRule {

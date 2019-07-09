@@ -93,7 +93,7 @@ void RouteHandlers::postDisconnectWiFi() {
   WiFi.softAP(WB_SSID, WB_PWD);
 }
 
-void RouteHandlers::getAPIInfo(Canvas * canvases) {
+void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
   String obj = "[";
   for (uint8_t i = 0; i < API_LIMIT; i++) {
     APIData data = canvases[i].getAPIData();
@@ -140,7 +140,7 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
-    int i = server.arg("index").toInt();
+  int i = server.arg("index").toInt();
     Serial.printf("Toggling active status for API: %s\n", canvases[i].getAPIData().name.c_str());
     canvases[i].toggleAPI();
     server.send(200, "text/plain", "200: Toggled active status for API");
