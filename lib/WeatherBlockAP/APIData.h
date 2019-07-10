@@ -22,6 +22,18 @@ struct APIData {
   APIData(String name, String url, long time) : name(name), url(url), refreshTime(time) {
     lastRefreshed = 0;
   }
+
+  String parseRulesString() {
+    String res; 
+    for (auto it = parseRules.begin(); it != parseRules.end(); it++) {
+      res += it->first + " " + it->second.x + " " + it->second.y + " " + it->second.type;
+      if (next(it) != parseRules.end()) {
+        res += ",";
+      }
+    }
+
+    return res;
+  }
 };
 
 #endif

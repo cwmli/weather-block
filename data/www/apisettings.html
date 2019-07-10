@@ -62,11 +62,11 @@
                 <div class="field-body">
                   <div class="field has-addons">
                     <div class="control">
-                      <input id="url" name="url" class="input is-success" type="number">
+                      <input id="refresh" name="refresh" class="input is-success" type="number">
                     </div>
                     <p class="control">
                       <a class="button is-static">
-                        minutes
+                        seconds
                       </a>
                     </p>
                   </div>
@@ -117,37 +117,18 @@
         if (this.readyState == 4 && this.status == 200) {
           var apidetails = JSON.parse(this.responseText);
           
-          apidetails.forEach(function(apiobj, i) {
-            document.getElementById("apitable").insertAdjacentHTML("beforeend",
-            `<tr><td>${apiobj.name}</td>
-              <td>
-                <textarea class="textarea has-fixed-size" readonly>${apiobj.url}</textarea>
-              </td>
-              <td>${apiobj.isActive}</td>
-              <td>every ${apiobj.refreshes} minutes</td>
-              <td>${apiobj.lastRefresh}</td>
-              <td>
-                <a onclick='toggleActiveAPI(${i})' class="button is-small is-link is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-power-off"></i>
-                  </span>
-                </a>
-                <a onclick='resetAPI(${i})' class="button is-small is-danger is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-ban"></i>
-                  </span>
-                </a>
-                <a href='/apisettings?index=${i}' class="button is-small is-primary is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-cog"></i>
-                  </span>
-                </a>
-              </td></tr>`
-            );
-          });
+          document.getElementById("apiname").innerHTML = apidetails.name;
+          document.getElementById("refreshed").innerHTML = apidetails.lastRefresh;
+          // form
+          document.getElementById("name").value = apidetails.name;
+          document.getElementById("url").value = apidetails.url;
+          document.getElementById("refresh").value = +apidetails.refreshes;
+          document.getElementById("active").value = apidetails.isActive;
+          document.getElementById("parserules").value = apidetails.parseRules;
         }
       };
-      xhttp.open("GET", "/apiinfo", true);
+      var url = new URL(window.location.href);
+      xhttp.open("GET", `/apiinfo?index=${+url.searchParams.get("index")}`, true);
       xhttp.send();
     </script>
   </body>

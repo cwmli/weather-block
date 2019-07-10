@@ -20,6 +20,7 @@ namespace RouteHandlers {
 
   // API control routes
   void getAllAPIInfo(Canvas * canvases);
+  void getAPIInfo(Canvas * canvases);
   void postRemoveAPI(Canvas * canvases);
   void postToggleAPI(Canvas * canvases);
 }

@@ -123,6 +123,38 @@ void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
   server.send(200, "text/plain", obj);
 }
 
+void RouteHandlers::getAPIInfo(Canvas * canvases) {
+  if (!server.hasArg("index") || server.arg("index") == NULL) {
+    Serial.println("Invalid index for API");
+    server.send(400, "text/plain", "400: Invalid Request");
+  } else {
+    APIData data = canvases[server.arg("index").toInt()].getAPIData();
+
+    char timestr[32];
+    std::time_t secsSinceEpoch = (long) data.lastRefreshed;
+    struct std::tm ts;
+    ts = *std::localtime(&secsSinceEpoch);
+    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R%p", &ts);
+
+    String jsonString;
+    jsonString += "{\"name\": \"";
+    jsonString += data.name;
+    jsonString += "\", \"url\": \"";
+    jsonString += data.url;
+    jsonString += "\", \"isActive\": \"";
+    jsonString += data.isActive;
+    jsonString += "\", \"refreshes\": \"";
+    jsonString += data.refreshTime; //in minutes
+    jsonString += "\", \"lastRefresh\": \"";
+    jsonString += timestr;
+    jsonString += "\", \"parseRules\": \"";
+    jsonString += data.parseRulesString();
+    jsonString += "\"}";
+
+    server.send(200, "text/plain", jsonString);
+  }
+}
+
 void RouteHandlers::postRemoveAPI(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
