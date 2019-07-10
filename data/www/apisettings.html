@@ -123,7 +123,7 @@
           document.getElementById("name").value = apidetails.name;
           document.getElementById("url").value = apidetails.url;
           document.getElementById("refresh").value = +apidetails.refreshes;
-          document.getElementById("active").value = apidetails.isActive;
+          document.getElementById("active").checked = apidetails.isActive == "1";
           document.getElementById("parserules").value = apidetails.parseRules;
         }
       };

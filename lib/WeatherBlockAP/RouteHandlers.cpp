@@ -102,7 +102,7 @@ void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
     std::time_t secsSinceEpoch = (long) data.lastRefreshed;
     struct std::tm ts;
     ts = *std::localtime(&secsSinceEpoch);
-    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R%p", &ts);
+    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R", &ts);
 
     String jsonString = i > 0 ? "," : "";
     jsonString += "{\"name\": \"";
@@ -134,7 +134,7 @@ void RouteHandlers::getAPIInfo(Canvas * canvases) {
     std::time_t secsSinceEpoch = (long) data.lastRefreshed;
     struct std::tm ts;
     ts = *std::localtime(&secsSinceEpoch);
-    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R%p", &ts);
+    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R", &ts);
 
     String jsonString;
     jsonString += "{\"name\": \"";
