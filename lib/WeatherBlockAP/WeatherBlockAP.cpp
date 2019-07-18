@@ -44,6 +44,7 @@ void WeatherBlockAP::init() {
   server.on("/apiinfo", HTTP_GET, [&](){ RouteHandlers::getAPIInfo(canvas); });
   server.on("/apireset", HTTP_POST, [&](){ RouteHandlers::postRemoveAPI(canvas); });
   server.on("/apitoggle", HTTP_POST, [&](){ RouteHandlers::postToggleAPI(canvas); });
+  server.on("/apiset", HTTP_POST, [&](){ RouteHandlers::postSetAPI(canvas); });
 
   server.onNotFound([]() {
     if (!RouteHandlers::getDefault(server.uri())) {

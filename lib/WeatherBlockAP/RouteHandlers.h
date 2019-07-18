@@ -23,6 +23,7 @@ namespace RouteHandlers {
   void getAPIInfo(Canvas * canvases);
   void postRemoveAPI(Canvas * canvases);
   void postToggleAPI(Canvas * canvases);
+  void postSetAPI(Canvas * canvases);
 }
 
 #endif

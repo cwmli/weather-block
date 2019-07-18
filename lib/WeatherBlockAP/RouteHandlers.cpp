@@ -178,3 +178,7 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
     server.send(200, "text/plain", "200: Toggled active status for API");
   }
 }
+
+void RouteHandlers::postSetAPI(Canvas * canvases) {
+  
+}

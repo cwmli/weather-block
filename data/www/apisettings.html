@@ -96,7 +96,7 @@
               </div>
               <div class="field is-grouped is-grouped-right">
                 <p class="control">
-                  <a class="button is-primary">
+                  <a class="button is-primary" onclick="formSubmit()">
                     Save
                   </a>
                 </p>
@@ -112,6 +112,26 @@
       </div>
     </section>
     <script>
+      var url = new URL(window.location.href);
+
+      function formSubmit() {
+        let name = encodeURIComponent(document.getElementById("name").value);
+        let url = encodeURIComponent(document.getElementById("url").value);
+        let refresh = document.getElementById("refresh").value;
+        let active = document.getElementById("active").checked;
+        let parserules = encodeURIComponent(document.getElementById("parserules").value);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/apiset", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`index=${+url.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}`);
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            window.location.href = "/";
+          }
+        };
+      }
+
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -127,7 +147,6 @@
           document.getElementById("parserules").value = apidetails.parseRules;
         }
       };
-      var url = new URL(window.location.href);
       xhttp.open("GET", `/apiinfo?index=${+url.searchParams.get("index")}`, true);
       xhttp.send();
     </script>
