@@ -187,7 +187,42 @@ void RouteHandlers::postSetAPI(Canvas * canvases) {
   } else {
     int i = server.arg("index").toInt();
     Serial.printf("Setting data for API: %s\n", canvases[i].getAPIData().name.c_str());
-    // use canvases[i].setAPI(...)
+
+    char allrules[500]; 
+    urldecode(server.arg("parserules")).toCharArray(allrules, 500);
+    std::map<String, APIParseRule> ruleset;
+    char * endparserule;
+    char * parserule = strtok_r(allrules, ",", &endparserule);
+    while(parserule != NULL) {
+      char * values[4];
+      byte index = 0; 
+      char * endrule;
+      char * rule = strtok_r(parserule, " ", &endrule);
+      while (rule != NULL) {
+        values[index++] = rule;
+        rule = strtok_r(NULL, " ", &endrule);
+      }
+
+      ruleset.insert(std::make_pair(
+        values[0],
+        APIParseRule{
+          atoi(values[1]),
+          atoi(values[2]),
+          static_cast<APIValueType>(atoi(values[3]))
+        }
+      ));
+
+      // Serial.printf("Parserule: %s | Tokens: %s, %s, %s, %s\n", parserule, values[0], values[1], values[2], values[3]);
+      parserule = strtok_r(NULL, ",", &endparserule);
+    }
+
+    canvases[i].setAPI(
+      urldecode(server.arg("name")),
+      urldecode(server.arg("url")),
+      (long) server.arg("refresh").toInt(),
+      server.arg("active") == "true",
+      ruleset
+    );
     server.send(200, "text/plain", "200: Set data for API");
   }
 }

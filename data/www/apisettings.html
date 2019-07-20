@@ -112,7 +112,7 @@
       </div>
     </section>
     <script>
-      var url = new URL(window.location.href);
+      var wurl = new URL(window.location.href);
 
       function formSubmit() {
         let name = encodeURIComponent(document.getElementById("name").value);
@@ -124,7 +124,7 @@
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/apiset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(`index=${+url.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}`);
+        xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}`);
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             window.location.href = "/";
@@ -147,7 +147,7 @@
           document.getElementById("parserules").value = apidetails.parseRules;
         }
       };
-      xhttp.open("GET", `/apiinfo?index=${+url.searchParams.get("index")}`, true);
+      xhttp.open("GET", `/apiinfo?index=${+wurl.searchParams.get("index")}`, true);
       xhttp.send();
     </script>
   </body>
