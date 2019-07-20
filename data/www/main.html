@@ -20,9 +20,9 @@
           </nav>
       </div>
       <div class="hero-body">
-        <div class="container">
+        <div class="container box">
           <div class="columns is-centered">
-            <div class="column is-full box">
+            <div class="column is-full">
               <div class="columns">
                 <div class="column">
                   <span class="has-text-weight-bold">Connected to: </span><span id="ssid"></span>
@@ -44,6 +44,30 @@
               </div>
             </div>
           </div>
+          <hr />
+          <div class="columns is-centered" style="margin-top: 1em;">
+            <div class="column">
+              <h1 class="has-text-weight-bold is-size-5">APIs</h1>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th>Active?</th>
+                    <th>Refreshes</th>
+                    <th>Last refreshed</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="apitable">
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -62,10 +86,68 @@
       xhttp.open("GET", "/wifidetails", true);
       xhttp.send();
 
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var apidetails = JSON.parse(this.responseText);
+          
+          apidetails.forEach(function(apiobj, i) {
+            document.getElementById("apitable").insertAdjacentHTML("beforeend",
+            `<tr><td>${apiobj.name}</td>
+              <td>
+                <textarea class="textarea has-fixed-size" readonly>${apiobj.url}</textarea>
+              </td>
+              <td>${apiobj.isActive}</td>
+              <td>every ${apiobj.refreshes} minutes</td>
+              <td>${apiobj.lastRefresh}</td>
+              <td>
+                <a onclick='toggleActiveAPI(${i})' class="button is-small is-link is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-power-off"></i>
+                  </span>
+                </a>
+                <a onclick='resetAPI(${i})' class="button is-small is-danger is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-ban"></i>
+                  </span>
+                </a>
+                <a href='/apisettings.html?index=${i}' class="button is-small is-primary is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-cog"></i>
+                  </span>
+                </a>
+              </td></tr>`
+            );
+          });
+        }
+      };
+      xhttp.open("GET", "/apiinfoall", true);
+      xhttp.send();
+
       function disconnectWifi() {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/wifidisconnect", true);
         xhttp.send();
+      }
+
+      function toggleActiveAPI(index) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+        }
+        xhttp.open("POST", "/apitoggle", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("index=" + index);        
+      }
+
+      function resetAPI(index) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+        }
+        xhttp.open("POST", "/apireset", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("index=" + index);        
       }
     </script>
   </body>

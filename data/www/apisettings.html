@@ -1,0 +1,154 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherBlock</title>
+    <link rel="stylesheet" href="./wbstyles.min.css">
+    <script defer src="./fontawesome.min.js"></script>
+    <script defer src="./solid.min.js"></script>
+  </head>
+  <body>
+    <section class="hero is-fullheight">
+      <div class="hero-head">
+        <nav class="navbar has-background-link" role="navigation" aria-label="main navigation">
+            <div class="navbar-menu">
+              <div class="navbar-brand">
+                <div class="navbar-item has-text-white title is-3">
+                  WeatherBlock
+                </div>
+              </div>
+            </div>
+          </nav>
+      </div>
+      <div class="hero-body">
+        <div class="container box">
+          <div class="columns is-centered" style="margin-top: 1em;">
+            <div class="column">
+              <h1 class="has-text-weight-bold is-size-5" id="apiname">api_name</h1>
+            </div>
+            <div class="column">
+              <span class="tag is-light is-medium is-pulled-right">Last refreshed:&nbsp;<span id="refreshed">iso_date</span></span>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <div class="field is-horizontal">
+                <div class="field-label">
+                  <label class="label">Name</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input id="name" name="name" class="input is-success" type="text">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">
+                  <label class="label">URL</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input id="url" name="url" class="input is-success" type="text">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">
+                  <label class="label">Refreshes every</label>
+                </div>
+                <div class="field-body">
+                  <div class="field has-addons">
+                    <div class="control">
+                      <input id="refresh" name="refresh" class="input is-success" type="number">
+                    </div>
+                    <p class="control">
+                      <a class="button is-static">
+                        seconds
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">
+                  <label class="label">Active?</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input id="active" name="active" type="checkbox">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Parse Rules</label>
+                <div class="field">
+                  <div class="control">
+                    <textarea class="textarea is-success" id="parserules" placeholder="arg1 1 1 0,arg2 5 3 2"></textarea>
+                  </div>
+                  <p class="help is-danger"><b>Format:</b> name_of_property x_pos y_pos type_of_value (separated by commas)</p>
+                  <p class="help is-danger"><b>type_of_value</b> is one of: 0 (NUMBER), 1 (ICON), 2 (TEXT)</p>
+                </div>
+              </div>
+              <div class="field is-grouped is-grouped-right">
+                <p class="control">
+                  <a class="button is-primary" onclick="formSubmit()">
+                    Save
+                  </a>
+                </p>
+                <p class="control">
+                  <a href="/" class="button is-link">
+                    Back
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      var wurl = new URL(window.location.href);
+
+      function formSubmit() {
+        let name = encodeURIComponent(document.getElementById("name").value);
+        let url = encodeURIComponent(document.getElementById("url").value);
+        let refresh = document.getElementById("refresh").value;
+        let active = document.getElementById("active").checked;
+        let parserules = encodeURIComponent(document.getElementById("parserules").value);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/apiset", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}`);
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            window.location.href = "/";
+          }
+        };
+      }
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var apidetails = JSON.parse(this.responseText);
+          
+          document.getElementById("apiname").innerHTML = apidetails.name;
+          document.getElementById("refreshed").innerHTML = apidetails.lastRefresh;
+          // form
+          document.getElementById("name").value = apidetails.name;
+          document.getElementById("url").value = apidetails.url;
+          document.getElementById("refresh").value = +apidetails.refreshes;
+          document.getElementById("active").checked = apidetails.isActive == "1";
+          document.getElementById("parserules").value = apidetails.parseRules;
+        }
+      };
+      xhttp.open("GET", `/apiinfo?index=${+wurl.searchParams.get("index")}`, true);
+      xhttp.send();
+    </script>
+  </body>
+</html>

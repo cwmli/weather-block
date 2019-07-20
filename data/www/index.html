@@ -68,7 +68,7 @@
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/setwifi", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("ssid=" + ssid + "&password=" + password);
+        xhttp.send(`ssid=${ssid}&password=${password}`);
 
         document.getElementById("conn-bar").classList.remove("is-hidden");
         document.getElementById("box-title").innerHTML = "Connecting to network, you will be disconnected from weatherblock";
