@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "APIData.h"
+#include "URLDecode.h"
 
 #include "config.h"
 
@@ -172,7 +173,7 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
-  int i = server.arg("index").toInt();
+    int i = server.arg("index").toInt();
     Serial.printf("Toggling active status for API: %s\n", canvases[i].getAPIData().name.c_str());
     canvases[i].toggleAPI();
     server.send(200, "text/plain", "200: Toggled active status for API");
@@ -180,5 +181,13 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
 }
 
 void RouteHandlers::postSetAPI(Canvas * canvases) {
-  
+  if (!server.hasArg("index") || server.arg("index") == NULL) {
+    Serial.println("Invalid index for API");
+    server.send(400, "text/plain", "400: Invalid Request");
+  } else {
+    int i = server.arg("index").toInt();
+    Serial.printf("Setting data for API: %s\n", canvases[i].getAPIData().name.c_str());
+    // use canvases[i].setAPI(...)
+    server.send(200, "text/plain", "200: Set data for API");
+  }
 }

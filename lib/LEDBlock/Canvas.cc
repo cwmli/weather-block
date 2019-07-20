@@ -68,8 +68,8 @@ void Canvas::draw(LEDController * controller) {
   }
 }
 
-void Canvas::setAPI(String name, String url, long refresh, std::map<String, APIParseRule> parseRules) {
-  apiobj.isActive = true;
+void Canvas::setAPI(String name, String url, long refresh, bool active, std::map<String, APIParseRule> parseRules) {
+  apiobj.isActive = active;
   apiobj.name = name;
   apiobj.url = url;
   apiobj.refreshTime = refresh;
