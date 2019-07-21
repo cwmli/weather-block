@@ -81,6 +81,17 @@ void Canvas::resetAPI() {
   apiobj.name = "";
   apiobj.url = "";
   apiobj.refreshTime = 0;
+  apiobj.parseRules = std::map<String, APIParseRule>();
+
+  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
+    delete *i;
+  }
+  APIElements.clear();
+
+  for (auto i = elements.begin(); i != elements.end(); i++) {
+    delete *i;
+  }
+  elements.clear();
 }
 
 APIData Canvas::getAPIData() {
