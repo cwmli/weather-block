@@ -53,15 +53,22 @@ void WeatherBlockAP::init() {
   });
 
   // --- TEST SETUP API ---
-  canvas[0].setAPI("DarkSky", 
-         "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
+  canvas[0].setAPI("WorldclockAPI", 
+         "https://worldclockapi.com/api/json/est/now", 
          60 * 60,
          true,
          std::map<String, APIParseRule> {
-           {"temperature", {11, 1, APIValueType::NUMBER}},
-           {"icon", {0, 0, APIValueType::ICON}}
+           {"currentDateTime", {1, 1, APIValueType::TIME}},
          });
-  canvas[0].addElement(new Elements::Text("c", 19, 1, false, 0));
+  // canvas[0].setAPI("DarkSky", 
+  //        "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
+  //        60 * 60,
+  //        true,
+  //        std::map<String, APIParseRule> {
+  //          {"temperature", {11, 1, APIValueType::NUMBER}},
+  //          {"icon", {0, 0, APIValueType::ICON}}
+  //        });
+  // canvas[0].addElement(new Elements::Text("c", 19, 1, false, 0));
   
   server.begin();
   Serial.println("HTTP server started");

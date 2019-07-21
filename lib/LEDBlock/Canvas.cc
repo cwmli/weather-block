@@ -2,6 +2,7 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <time.h>
 
 #include "Icons.h"
 
@@ -129,6 +130,16 @@ void Canvas::updateAPI(unsigned long curtime) {
         if (it->second.type == APIValueType::NUMBER) {
           float temp = payload.substring(pos + it->first.length() + 2, end).toFloat();
           apiobj.data[it->first] = (int) round(temp);
+        } else if (it->second.type == APIValueType::TIME) {
+          char temp[17];
+          struct tm tm;
+          // Extract to tm struct 
+          payload.substring(pos + it->first.length() + 3, end - 1).toCharArray(temp, 17);
+          strptime(temp, "%Y-%m-%dT%H:%M", &tm);
+          // Reformat to desired output
+          char time[9];
+          strftime(time, 9, "%I:%M %p", &tm);
+          apiobj.data[it->first] = time;
         } else {
           apiobj.data[it->first] = payload.substring(pos + it->first.length() + 3, end - 1);
         }
