@@ -23,6 +23,11 @@ static const PROGMEM uint8_t LED_INDICES[ROWS][COLUMNS] = {{ 0,  1,  2,  3,  4, 
 #define UCHAR_OFFSET  65
 #define LCHAR_OFFSET  97
 
+#define SFONT_X       3
+#define CHAR_MINUS    45
+#define CHAR_PLUS     43
+#define CHAR_COLON    58
+
 // A..Z CAPS ONLY BINARY REPRESENTATION
 static const PROGMEM byte UCHARACTERS[26][FONT_Y] = {
   {B01110, B10001, B11111, B10001, B10001, B10001}, {B11110, B10001, B11110, B10001, B10001, B11110},//A, B
@@ -55,12 +60,17 @@ static const PROGMEM byte LCHARACTERS[26][FONT_Y] = {
   {B00000, B10101, B10101, B10101, B10101, B01010}, {B00000, B10001, B01010, B00100, B01010, B10001}, //w, x
   {B10001, B10001, B10001, B01111, B00001, B01110}, {B00000, B11111, B00010, B00100, B01000, B11111}};//y, z
 
+static const PROGMEM byte SCHARACTERS[3][FONT_Y] = {
+  {B0, B0, B1, B0, B1, B0}, // :
+  {B000, B000, B000, B111, B000, B000}, // -
+  {B000, B000, B010, B111, B010, B000}  // +
+};
+
 #define NUM_X        3
-#define NUM_Y        6
 #define NUM_OFFSET   48
 
 // 0..9 and special char :
-static const PROGMEM byte NUMBERS[10][NUM_Y] = {
+static const PROGMEM byte NUMBERS[10][FONT_Y] = {
   {B010, B101, B101, B101, B101, B010}, {B010, B110, B010, B010, B010, B111},//0, 1
   {B110, B001, B010, B100, B100, B111}, {B110, B001, B110, B001, B001, B110},//2, 3
   {B101, B101, B101, B111, B001, B001}, {B111, B100, B110, B001, B001, B110},//4, 5
@@ -95,7 +105,8 @@ void fillActiveLed(uint8_t row, uint8_t col, uint8_t num, bool vertical, bool lf
 
 // fillChar(c) sets active leds at target location defined by row
 // and col to display char c, row and col do not have to be valid
-void fillChar(uint8_t row, uint8_t col, char c);
+// returns the width of the character
+int fillChar(uint8_t row, uint8_t col, char c);
 
 // fillNum(c) sets active leds at target location defined by row
 // and col to display int i, row and col do not have to be valid

@@ -59,8 +59,8 @@ void LEDController::text(String& string, int& x, int& y) {
       fillNum(y, offset, string[i]);
       offset += NUM_X + 1;
     } else {
-		  fillChar(y, offset, string[i]);
-      offset += FONT_X + 1;
+		  int spc = fillChar(y, offset, string[i]);
+      offset += spc + 1;
     }
   }
 

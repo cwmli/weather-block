@@ -137,8 +137,11 @@ void Canvas::updateAPI(unsigned long curtime) {
           payload.substring(pos + it->first.length() + 3, end - 1).toCharArray(temp, 17);
           strptime(temp, "%Y-%m-%dT%H:%M", &tm);
           // Reformat to desired output
-          char time[9];
-          strftime(time, 9, "%I:%M %p", &tm);
+          char time[7];
+          strftime(time, 7, "%I:%M%p", &tm);
+          // Convert A,P to a,p
+          if (time[5] == 65) time[5] = 97;
+          if (time[5] == 80) time[5] = 112;
           apiobj.data[it->first] = time;
         } else {
           apiobj.data[it->first] = payload.substring(pos + it->first.length() + 3, end - 1);
