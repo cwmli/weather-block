@@ -33,8 +33,13 @@
                   <label class="label">Brightness</label>
                 </div>
                 <div class="field-body">
+                  <div class="field is-narrow">
+                    <input type="range" name="brightness" min="0" max="100" onchange="updateBrightness(event)">
+                  </div>
                   <div class="field">
-                    <input type="range" name="brightness" min="0" max="100">
+                    <div class="control is-small" id="bcontrol">
+                      <input type="number" class="input is-small is-link" name="brightness" min="0" max="100" onchange="updateBrightness(event)">
+                    </div> 
                   </div>
                 </div>
               </div>
@@ -46,7 +51,9 @@
                 </div>
                 <div class="field-body">
                   <div class="field">
-                    <input type="number" name="activecanvas" min="0" max="4">
+                    <div class="control is-small" id="accontrol">
+                      <input type="number" class="input is-small is-link" name="activecanvas" min="0" max="4" onchange="updateActiveCanvas(event)">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -180,6 +187,47 @@
         xhttp.open("POST", "/apireset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
+      }
+
+      function updateBrightness(ev) {
+        // Make post request to change brightness
+        // Clamp value between 100 and 0
+        let bValue = Math.max(Math.min(ev.target.value, 100), 0);
+        let bInputs = document.getElementsByName("brightness");
+        bInputs.forEach(e => {
+          e.value = bValue;
+        });
+
+        document.getElementById("bcontrol").classList.toggle("is-loading");
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) { 
+            document.getElementById("bcontrol").classList.toggle("is-loading");
+          }
+        }
+        xhttp.open("POST", "/setbrightness", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`val=${bValue}`);
+      }
+
+      function updateActiveCanvas(ev) {
+        //Make post request to change active canvas
+        // Clamp value between 100 and 4
+        let acValue = Math.max(Math.min(ev.target.value, 4), 0);
+        ev.target.value = acValue;
+
+        document.getElementById("accontrol").classList.toggle("is-loading");
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("accontrol").classList.toggle("is-loading");
+          }
+        }
+        xhttp.open("POST", "/setactivecanvas", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`val=${acValue}`);
       }
     </script>
   </body>
