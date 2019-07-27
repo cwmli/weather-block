@@ -130,3 +130,19 @@ void WeatherBlockAP::update() {
   }
 
 }
+
+void WeatherBlockAP::incrementBrightness() {
+  controller.incrementBrightness();
+}
+
+void WeatherBlockAP::decrementBrightness() {
+  controller.decrementBrightness();
+}
+
+void WeatherBlockAP::incrementActiveCanvas() {
+  activeCanvas = min(activeCanvas + 1, API_LIMIT - 1);
+}
+
+void WeatherBlockAP::decrementActiveCanvas() {
+  activeCanvas = max(activeCanvas - 1, 0);
+}

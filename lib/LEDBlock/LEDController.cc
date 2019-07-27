@@ -12,7 +12,17 @@ void LEDController::incrementBrightness() {
   if (currentBrightness == 0) {
     currentBrightness = 2;
   } else {
-    currentBrightness = currentBrightness * 2 > MAX_BRIGHTNESS ? 0 : currentBrightness * 2;
+    currentBrightness = min(currentBrightness * 2, MAX_BRIGHTNESS);
+  }
+
+  setBrightness(currentBrightness);
+}
+
+void LEDController::decrementBrightness() {
+  if (currentBrightness == 1) {
+    currentBrightness = 0;
+  } else {
+    currentBrightness = currentBrightness / 2;
   }
 
   setBrightness(currentBrightness);
