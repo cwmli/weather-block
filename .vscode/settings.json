@@ -1,6 +1,6 @@
 {
   "terminal.integrated.env.linux": {
-    "PATH": "/home/calvin/.platformio/penv/bin:/home/calvin/.platformio/penv:/home/calvin/.local/bin:/home/calvin/bin:/home/calvin/.rbenv/shims:/home/calvin/.rbenv/bin:/home/calvin/sys161/bin:/home/calvin/sys161/tools/bin:/home/calvin/.nvm/versions/node/v10.10.0/bin:/home/calvin/.local/bin:/home/calvin/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/chromium-browser/",
+    "PATH": "/home/calvin/.platformio/penv/bin:/home/calvin/.platformio/penv:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin:/snap/bin",
     "PLATFORMIO_CALLER": "vscode"
   },
   "files.associations": {

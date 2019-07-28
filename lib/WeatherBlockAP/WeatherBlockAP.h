@@ -22,6 +22,14 @@ public:
   void init();
 
   void update();
+
+  void incrementBrightness();
+
+  void decrementBrightness();
+
+  void incrementActiveCanvas();
+
+  void decrementActiveCanvas();
 };
 
 #endif

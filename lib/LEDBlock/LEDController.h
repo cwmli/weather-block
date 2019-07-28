@@ -46,6 +46,8 @@ public:
 
   void incrementBrightness();
 
+  void decrementBrightness();
+
   void incrementSpeed();
 
   void setBrightness(uint8_t brightness);

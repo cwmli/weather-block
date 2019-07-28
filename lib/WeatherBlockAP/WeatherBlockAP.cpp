@@ -46,6 +46,29 @@ void WeatherBlockAP::init() {
   server.on("/apitoggle", HTTP_POST, [&](){ RouteHandlers::postToggleAPI(canvas); });
   server.on("/apiset", HTTP_POST, [&](){ RouteHandlers::postSetAPI(canvas); });
 
+  server.on("/setbrightness", HTTP_POST, [&](){ 
+    if (!server.hasArg("val") || server.arg("val") == NULL) {
+      Serial.println("Invalid value for brightness");
+      server.send(400, "text/plain", "400: Invalid Request");
+    } else {
+      int i = server.arg("val").toInt();
+      Serial.printf("Setting brightness: %d\n", i);
+      controller.setBrightness(i);
+      server.send(200, "text/plain", "200: Toggled active status for API");
+    }
+  });
+  server.on("/setactivecanvas", HTTP_POST, [&](){ 
+    if (!server.hasArg("val") || server.arg("val") == NULL) {
+      Serial.println("Invalid value for active canvas");
+      server.send(400, "text/plain", "400: Invalid Request");
+    } else {
+      int i = server.arg("val").toInt();
+      Serial.printf("Setting active canvas: %d\n", i);
+      activeCanvas = i;
+      server.send(200, "text/plain", "200: Toggled active status for API");
+    }
+  });
+
   server.onNotFound([]() {
     if (!RouteHandlers::getDefault(server.uri())) {
       server.send(404, "text/plain", "404: Not Found");
@@ -60,15 +83,15 @@ void WeatherBlockAP::init() {
          std::map<String, APIParseRule> {
            {"currentDateTime", {1, 1, APIValueType::TIME}},
          });
-  // canvas[0].setAPI("DarkSky", 
-  //        "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
-  //        60 * 60,
-  //        true,
-  //        std::map<String, APIParseRule> {
-  //          {"temperature", {11, 1, APIValueType::NUMBER}},
-  //          {"icon", {0, 0, APIValueType::ICON}}
-  //        });
-  // canvas[0].addElement(new Elements::Text("c", 19, 1, false, 0));
+  canvas[1].setAPI("DarkSky", 
+         "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
+         60 * 60,
+         true,
+         std::map<String, APIParseRule> {
+           {"temperature", {11, 1, APIValueType::NUMBER}},
+           {"icon", {0, 0, APIValueType::ICON}}
+         });
+  canvas[1].addElement(new Elements::Text("c", 19, 1, false, 0));
   
   server.begin();
   Serial.println("HTTP server started");
@@ -106,4 +129,20 @@ void WeatherBlockAP::update() {
     canvas[i].updateAPI(timeClient.getEpochTime());
   }
 
+}
+
+void WeatherBlockAP::incrementBrightness() {
+  controller.incrementBrightness();
+}
+
+void WeatherBlockAP::decrementBrightness() {
+  controller.decrementBrightness();
+}
+
+void WeatherBlockAP::incrementActiveCanvas() {
+  activeCanvas = min(activeCanvas + 1, API_LIMIT - 1);
+}
+
+void WeatherBlockAP::decrementActiveCanvas() {
+  activeCanvas = max(activeCanvas - 1, 0);
 }
