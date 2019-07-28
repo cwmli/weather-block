@@ -4,10 +4,10 @@
 
 WeatherBlockAP wbAP;
 
-BtnState lwrbr(D8);
-BtnState incbr(D7);
-BtnState acvdcr(D6);
-BtnState acvinc(D5);
+BtnState brightnessBtnIncr(D7);
+BtnState brightnessBtnDecr(D8);
+BtnState activeCanvasBtnIncr(D5);
+BtnState activeCanvasBtnDecr(D6);
 
 void setup() {
   wbAP.init();
@@ -24,21 +24,21 @@ void setup() {
 void loop() {
   wbAP.update();
 
-  uint8_t lwrbrState = lwrbr.get();
-  uint8_t incbrState = incbr.get();
-  uint8_t acvdcrState = acvdcr.get();
-  uint8_t acvincState = acvinc.get();
+  uint8_t brightnessBtnDecrState = brightnessBtnDecr.get();
+  uint8_t brightnessBtnIncrState = brightnessBtnIncr.get();
+  uint8_t activeCanvasBtnDecrState = activeCanvasBtnDecr.get();
+  uint8_t activeCanvasBtnIncrState = activeCanvasBtnIncr.get();
 
-  if (lwrbrState == S_PRESS) {
+  if (brightnessBtnDecrState == S_PRESS) {
     wbAP.decrementBrightness();
   }
-  if (incbrState == S_PRESS) {
+  if (brightnessBtnIncrState == S_PRESS) {
     wbAP.incrementBrightness();
   }
-  if (acvdcrState == S_PRESS) {
+  if (activeCanvasBtnDecrState == S_PRESS) {
     wbAP.decrementActiveCanvas();
   }
-  if (acvincState == S_PRESS) {
+  if (activeCanvasBtnIncrState == S_PRESS) {
     wbAP.incrementActiveCanvas();
   }
 }
