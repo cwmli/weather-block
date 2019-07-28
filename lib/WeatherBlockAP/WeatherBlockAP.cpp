@@ -78,7 +78,7 @@ void WeatherBlockAP::init() {
   // --- TEST SETUP API ---
   canvas[0].setAPI("WorldclockAPI", 
          "https://worldclockapi.com/api/json/est/now", 
-         60 * 60,
+         30,
          true,
          std::map<String, APIParseRule> {
            {"currentDateTime", {1, 1, APIValueType::TIME}},

@@ -38,9 +38,11 @@ void LEDController::incrementSpeed() {
 
 
 void LEDController::setBrightness(uint8_t brightness) {
-  if (brightness <= MAX_BRIGHTNESS) {
-    FastLED.setBrightness(brightness);
-  }
+  float fbrightness = brightness;
+  float scale = fbrightness / 100.0f;
+  brightness = MAX_BRIGHTNESS * scale;
+
+  FastLED.setBrightness(brightness);
 }
 
 void LEDController::setSolidColor(uint8_t r, uint8_t g, uint8_t b) {
