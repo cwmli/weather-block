@@ -129,7 +129,8 @@ void RouteHandlers::getAPIInfo(Canvas * canvases) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
-    APIData data = canvases[server.arg("index").toInt()].getAPIData();
+    int index = server.arg("index").toInt();
+    APIData data = canvases[index].getAPIData();
 
     char timestr[32];
     std::time_t secsSinceEpoch = (long) data.lastRefreshed;
@@ -150,6 +151,8 @@ void RouteHandlers::getAPIInfo(Canvas * canvases) {
     jsonString += timestr;
     jsonString += "\", \"parseRules\": \"";
     jsonString += data.parseRulesString();
+    jsonString += "\", \"additionalElements\": \"";
+    jsonString += canvases[index].getElementsString();
     jsonString += "\"}";
 
     server.send(200, "text/plain", jsonString);
@@ -223,6 +226,11 @@ void RouteHandlers::postSetAPI(Canvas * canvases) {
       server.arg("active") == "true",
       ruleset
     );
+
+    char elementset[500]; 
+    urldecode(server.arg("additionalelements")).toCharArray(elementset, 500);
+    canvases[i].setElements(elementset);
+
     server.send(200, "text/plain", "200: Set data for API");
   }
 }
