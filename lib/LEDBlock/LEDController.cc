@@ -36,6 +36,9 @@ void LEDController::incrementSpeed() {
   }
 }
 
+uint8_t LEDController::getBrightness() {
+  return currentBrightness;
+}
 
 void LEDController::setBrightness(uint8_t brightness) {
   float fbrightness = brightness;

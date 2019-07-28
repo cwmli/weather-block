@@ -50,6 +50,8 @@ public:
 
   void incrementSpeed();
 
+  uint8_t getBrightness();
+
   void setBrightness(uint8_t brightness);
 
   void setSolidColor(uint8_t r, uint8_t g, uint8_t b);

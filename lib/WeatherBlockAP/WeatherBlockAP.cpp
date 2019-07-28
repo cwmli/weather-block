@@ -37,7 +37,6 @@ void WeatherBlockAP::init() {
 
   server.on("/setwifi", HTTP_POST, RouteHandlers::postWiFi);
   server.on("/wifistatus", HTTP_GET, RouteHandlers::getPollWiFi);
-  server.on("/wifidetails", HTTP_GET, RouteHandlers::getWiFiDetails);
   server.on("/wifidisconnect", HTTP_POST, RouteHandlers::postDisconnectWiFi);
 
   server.on("/apiinfoall", HTTP_GET, [&](){ RouteHandlers::getAllAPIInfo(canvas); });
@@ -46,6 +45,29 @@ void WeatherBlockAP::init() {
   server.on("/apitoggle", HTTP_POST, [&](){ RouteHandlers::postToggleAPI(canvas); });
   server.on("/apiset", HTTP_POST, [&](){ RouteHandlers::postSetAPI(canvas); });
 
+
+  server.on("/wbdetails", HTTP_GET, [&]() {
+    String ssid = WiFi.SSID();
+    String ipaddr = WiFi.localIP().toString();
+    String subnet = WiFi.subnetMask().toString();
+    String gateway = WiFi.gatewayIP().toString();
+
+    String jsonString = "{\"ssid\": \"";
+    jsonString += ssid;
+    jsonString += "\", \"ipaddr\": \"";
+    jsonString += ipaddr;
+    jsonString += "\", \"subnet\": \"";
+    jsonString += subnet;
+    jsonString += "\", \"gateway\": \"";
+    jsonString += gateway;
+    jsonString += "\", \"brightness\": \"";
+    jsonString += controller.getBrightness();
+    jsonString += "\", \"activecanvas\": \"";
+    jsonString += activeCanvas;
+    jsonString += "\"}";
+
+    server.send(200, "text/plain", jsonString);
+  });
   server.on("/setbrightness", HTTP_POST, [&](){ 
     if (!server.hasArg("val") || server.arg("val") == NULL) {
       Serial.println("Invalid value for brightness");

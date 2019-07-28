@@ -15,7 +15,6 @@ namespace RouteHandlers {
   // WiFi setup routes
   void postWiFi();
   void getPollWiFi();
-  void getWiFiDetails();
   void postDisconnectWiFi();
 
   // API control routes

@@ -66,25 +66,6 @@ void RouteHandlers::getPollWiFi() {
   }
 }
 
-void RouteHandlers::getWiFiDetails() {
-  String ssid = WiFi.SSID();
-  String ipaddr = WiFi.localIP().toString();
-  String subnet = WiFi.subnetMask().toString();
-  String gateway = WiFi.gatewayIP().toString();
-
-  String jsonString = "{\"ssid\": \"";
-  jsonString += ssid;
-  jsonString += "\", \"ipaddr\": \"";
-  jsonString += ipaddr;
-  jsonString += "\", \"subnet\": \"";
-  jsonString += subnet;
-  jsonString += "\", \"gateway\": \"";
-  jsonString += gateway;
-  jsonString += "\"}";
-
-  server.send(200, "text/plain", jsonString);
-}
-
 void RouteHandlers::postDisconnectWiFi() {
   server.send(200, "text/plain", "true");
   WiFi.disconnect(true);
