@@ -75,7 +75,7 @@ void RouteHandlers::postDisconnectWiFi() {
   WiFi.softAP(WB_SSID, WB_PWD);
 }
 
-void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
+void RouteHandlers::getAllCanvasInfo(Canvas * canvases) {
   String obj = "[";
   for (uint8_t i = 0; i < API_LIMIT; i++) {
     APIData data = canvases[i].getAPIData();
@@ -105,7 +105,7 @@ void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
   server.send(200, "text/plain", obj);
 }
 
-void RouteHandlers::getAPIInfo(Canvas * canvases) {
+void RouteHandlers::getCanvasInfo(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
@@ -140,19 +140,20 @@ void RouteHandlers::getAPIInfo(Canvas * canvases) {
   }
 }
 
-void RouteHandlers::postRemoveAPI(Canvas * canvases) {
+void RouteHandlers::postResetCanvas(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
     int i = server.arg("index").toInt();
-    Serial.printf("Removing API: %s\n", canvases[i].getAPIData().name.c_str());
+    Serial.printf("Removing API and Elements: %s\n", canvases[i].getAPIData().name.c_str());
     canvases[i].resetAPI();
+    canvases[i].resetElements();
     server.send(200, "text/plain", "200: Removed API");
   }
 }
 
-void RouteHandlers::postToggleAPI(Canvas * canvases) {
+void RouteHandlers::postToggleCanvas(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
@@ -164,7 +165,7 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
   }
 }
 
-void RouteHandlers::postSetAPI(Canvas * canvases) {
+void RouteHandlers::postSetCanvas(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");

@@ -133,7 +133,7 @@
         let additionalelements = encodeURIComponent(document.getElementById("additionalelements").value);
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/apiset", true);
+        xhttp.open("POST", "/canvasset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}&additionalelements=${additionalelements}`);
         xhttp.onreadystatechange = function() {
@@ -159,7 +159,7 @@
           document.getElementById("additionalelements").value = apidetails.additionalElements;
         }
       };
-      xhttp.open("GET", `/apiinfo?index=${+wurl.searchParams.get("index")}`, true);
+      xhttp.open("GET", `/canvasinfo?index=${+wurl.searchParams.get("index")}`, true);
       xhttp.send();
     </script>
   </body>

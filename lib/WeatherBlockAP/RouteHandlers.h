@@ -17,12 +17,12 @@ namespace RouteHandlers {
   void getPollWiFi();
   void postDisconnectWiFi();
 
-  // API control routes
-  void getAllAPIInfo(Canvas * canvases);
-  void getAPIInfo(Canvas * canvases);
-  void postRemoveAPI(Canvas * canvases);
-  void postToggleAPI(Canvas * canvases);
-  void postSetAPI(Canvas * canvases);
+  // Canvas control routes
+  void getAllCanvasInfo(Canvas * canvases);
+  void getCanvasInfo(Canvas * canvases);
+  void postResetCanvas(Canvas * canvases);
+  void postToggleCanvas(Canvas * canvases);
+  void postSetCanvas(Canvas * canvases);
 }
 
 #endif

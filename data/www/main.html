@@ -165,7 +165,7 @@
           });
         }
       };
-      xhttp.open("GET", "/apiinfoall", true);
+      xhttp.open("GET", "/canvasinfoall", true);
       xhttp.send();
 
       function disconnectWifi() {
@@ -179,7 +179,7 @@
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
         }
-        xhttp.open("POST", "/apitoggle", true);
+        xhttp.open("POST", "/canvastoggle", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
       }
@@ -189,7 +189,7 @@
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
         }
-        xhttp.open("POST", "/apireset", true);
+        xhttp.open("POST", "/canvasreset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
       }
