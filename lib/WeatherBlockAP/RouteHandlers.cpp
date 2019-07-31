@@ -66,25 +66,6 @@ void RouteHandlers::getPollWiFi() {
   }
 }
 
-void RouteHandlers::getWiFiDetails() {
-  String ssid = WiFi.SSID();
-  String ipaddr = WiFi.localIP().toString();
-  String subnet = WiFi.subnetMask().toString();
-  String gateway = WiFi.gatewayIP().toString();
-
-  String jsonString = "{\"ssid\": \"";
-  jsonString += ssid;
-  jsonString += "\", \"ipaddr\": \"";
-  jsonString += ipaddr;
-  jsonString += "\", \"subnet\": \"";
-  jsonString += subnet;
-  jsonString += "\", \"gateway\": \"";
-  jsonString += gateway;
-  jsonString += "\"}";
-
-  server.send(200, "text/plain", jsonString);
-}
-
 void RouteHandlers::postDisconnectWiFi() {
   server.send(200, "text/plain", "true");
   WiFi.disconnect(true);
@@ -94,7 +75,7 @@ void RouteHandlers::postDisconnectWiFi() {
   WiFi.softAP(WB_SSID, WB_PWD);
 }
 
-void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
+void RouteHandlers::getAllCanvasInfo(Canvas * canvases) {
   String obj = "[";
   for (uint8_t i = 0; i < API_LIMIT; i++) {
     APIData data = canvases[i].getAPIData();
@@ -124,12 +105,13 @@ void RouteHandlers::getAllAPIInfo(Canvas * canvases) {
   server.send(200, "text/plain", obj);
 }
 
-void RouteHandlers::getAPIInfo(Canvas * canvases) {
+void RouteHandlers::getCanvasInfo(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
-    APIData data = canvases[server.arg("index").toInt()].getAPIData();
+    int index = server.arg("index").toInt();
+    APIData data = canvases[index].getAPIData();
 
     char timestr[32];
     std::time_t secsSinceEpoch = (long) data.lastRefreshed;
@@ -150,25 +132,28 @@ void RouteHandlers::getAPIInfo(Canvas * canvases) {
     jsonString += timestr;
     jsonString += "\", \"parseRules\": \"";
     jsonString += data.parseRulesString();
+    jsonString += "\", \"additionalElements\": \"";
+    jsonString += canvases[index].getElementsString();
     jsonString += "\"}";
 
     server.send(200, "text/plain", jsonString);
   }
 }
 
-void RouteHandlers::postRemoveAPI(Canvas * canvases) {
+void RouteHandlers::postResetCanvas(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
   } else {
     int i = server.arg("index").toInt();
-    Serial.printf("Removing API: %s\n", canvases[i].getAPIData().name.c_str());
+    Serial.printf("Removing API and Elements: %s\n", canvases[i].getAPIData().name.c_str());
     canvases[i].resetAPI();
+    canvases[i].resetElements();
     server.send(200, "text/plain", "200: Removed API");
   }
 }
 
-void RouteHandlers::postToggleAPI(Canvas * canvases) {
+void RouteHandlers::postToggleCanvas(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
@@ -180,7 +165,7 @@ void RouteHandlers::postToggleAPI(Canvas * canvases) {
   }
 }
 
-void RouteHandlers::postSetAPI(Canvas * canvases) {
+void RouteHandlers::postSetCanvas(Canvas * canvases) {
   if (!server.hasArg("index") || server.arg("index") == NULL) {
     Serial.println("Invalid index for API");
     server.send(400, "text/plain", "400: Invalid Request");
@@ -223,6 +208,11 @@ void RouteHandlers::postSetAPI(Canvas * canvases) {
       server.arg("active") == "true",
       ruleset
     );
+
+    char elementset[500]; 
+    urldecode(server.arg("additionalelements")).toCharArray(elementset, 500);
+    canvases[i].setElements(elementset);
+
     server.send(200, "text/plain", "200: Set data for API");
   }
 }

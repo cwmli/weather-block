@@ -114,15 +114,20 @@
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          var wifidetails = JSON.parse(this.responseText);
+          var wbdetails = JSON.parse(this.responseText);
           
-          document.getElementById("ssid").innerHTML = wifidetails.ssid;
-          document.getElementById("ipaddr").innerHTML = wifidetails.ipaddr;
-          document.getElementById("subnet").innerHTML = wifidetails.subnet;
-          document.getElementById("gateway").innerHTML = wifidetails.gateway;
+          document.getElementById("ssid").innerHTML = wbdetails.ssid;
+          document.getElementById("ipaddr").innerHTML = wbdetails.ipaddr;
+          document.getElementById("subnet").innerHTML = wbdetails.subnet;
+          document.getElementById("gateway").innerHTML = wbdetails.gateway;
+
+          var binputs = document.getElementsByName("brightness");
+          binputs[0].value = wbdetails.brightness;
+          binputs[1].value = wbdetails.brightness;
+          document.getElementsByName("activecanvas")[0].value = wbdetails.activecanvas;
         }
       };
-      xhttp.open("GET", "/wifidetails", true);
+      xhttp.open("GET", "/wbdetails", true);
       xhttp.send();
 
       var xhttp = new XMLHttpRequest();
@@ -160,7 +165,7 @@
           });
         }
       };
-      xhttp.open("GET", "/apiinfoall", true);
+      xhttp.open("GET", "/canvasinfoall", true);
       xhttp.send();
 
       function disconnectWifi() {
@@ -174,7 +179,7 @@
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
         }
-        xhttp.open("POST", "/apitoggle", true);
+        xhttp.open("POST", "/canvastoggle", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
       }
@@ -184,7 +189,7 @@
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
         }
-        xhttp.open("POST", "/apireset", true);
+        xhttp.open("POST", "/canvasreset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
       }

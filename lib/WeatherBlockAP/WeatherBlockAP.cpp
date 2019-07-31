@@ -37,15 +37,37 @@ void WeatherBlockAP::init() {
 
   server.on("/setwifi", HTTP_POST, RouteHandlers::postWiFi);
   server.on("/wifistatus", HTTP_GET, RouteHandlers::getPollWiFi);
-  server.on("/wifidetails", HTTP_GET, RouteHandlers::getWiFiDetails);
   server.on("/wifidisconnect", HTTP_POST, RouteHandlers::postDisconnectWiFi);
 
-  server.on("/apiinfoall", HTTP_GET, [&](){ RouteHandlers::getAllAPIInfo(canvas); });
-  server.on("/apiinfo", HTTP_GET, [&](){ RouteHandlers::getAPIInfo(canvas); });
-  server.on("/apireset", HTTP_POST, [&](){ RouteHandlers::postRemoveAPI(canvas); });
-  server.on("/apitoggle", HTTP_POST, [&](){ RouteHandlers::postToggleAPI(canvas); });
-  server.on("/apiset", HTTP_POST, [&](){ RouteHandlers::postSetAPI(canvas); });
+  server.on("/canvasinfoall", HTTP_GET, [&](){ RouteHandlers::getAllCanvasInfo(canvas); });
+  server.on("/canvasinfo", HTTP_GET, [&](){ RouteHandlers::getCanvasInfo(canvas); });
+  server.on("/canvasreset", HTTP_POST, [&](){ RouteHandlers::postResetCanvas(canvas); });
+  server.on("/canvastoggle", HTTP_POST, [&](){ RouteHandlers::postToggleCanvas(canvas); });
+  server.on("/canvasset", HTTP_POST, [&](){ RouteHandlers::postSetCanvas(canvas); });
 
+
+  server.on("/wbdetails", HTTP_GET, [&]() {
+    String ssid = WiFi.SSID();
+    String ipaddr = WiFi.localIP().toString();
+    String subnet = WiFi.subnetMask().toString();
+    String gateway = WiFi.gatewayIP().toString();
+
+    String jsonString = "{\"ssid\": \"";
+    jsonString += ssid;
+    jsonString += "\", \"ipaddr\": \"";
+    jsonString += ipaddr;
+    jsonString += "\", \"subnet\": \"";
+    jsonString += subnet;
+    jsonString += "\", \"gateway\": \"";
+    jsonString += gateway;
+    jsonString += "\", \"brightness\": \"";
+    jsonString += controller.getBrightness();
+    jsonString += "\", \"activecanvas\": \"";
+    jsonString += activeCanvas;
+    jsonString += "\"}";
+
+    server.send(200, "text/plain", jsonString);
+  });
   server.on("/setbrightness", HTTP_POST, [&](){ 
     if (!server.hasArg("val") || server.arg("val") == NULL) {
       Serial.println("Invalid value for brightness");
@@ -78,7 +100,7 @@ void WeatherBlockAP::init() {
   // --- TEST SETUP API ---
   canvas[0].setAPI("WorldclockAPI", 
          "https://worldclockapi.com/api/json/est/now", 
-         60 * 60,
+         30,
          true,
          std::map<String, APIParseRule> {
            {"currentDateTime", {1, 1, APIValueType::TIME}},
@@ -108,14 +130,19 @@ void WeatherBlockAP::update() {
   controller.update();
   controller.reset();
 
-  isConnected = WiFi.status() == WL_CONNECTED;
+  byte wStatus = WiFi.status();
+  if (wStatus == WL_NO_SSID_AVAIL || wStatus == WL_CONNECT_FAILED) {
+    Serial.println("WiFi disconnected: SSID unavailable or password is incorrect, entering SoftAP mode");
+    RouteHandlers::postDisconnectWiFi();
+  }
 
+  isConnected = wStatus == WL_CONNECTED;
   if (!isConnected) {
     return;
   }
 
   if (!isTimeclientRunning) {
-    Serial.println("WiFI connected: starting timeclient");
+    Serial.println("WiFi connected: starting timeclient");
     timeClient.begin();
     isTimeclientRunning = true;
   }

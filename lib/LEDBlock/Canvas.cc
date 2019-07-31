@@ -42,21 +42,31 @@ void Canvas::update() {
   }
 }
 
-void Canvas::addElement(Elements::Generic * e) {
+void Canvas::addElement(Elements::Text * e) {
   elements.push_back(e);
 }
 
-void Canvas::removeElement(int index) {
-  auto it = elements.begin();
-  for (int i = 0; i < index; i++) {
-    it = it++;
+void Canvas::resetElements() {
+  for (auto i = elements.begin(); i != elements.end(); i++) {
+    delete *i;
   }
-  delete *it;
-  elements.erase(it);
+  elements.clear();
 }
 
-std::vector<Elements::Generic *> Canvas::getElements() {
+std::vector<Elements::Text *> Canvas::getElements() {
   return elements;
+}
+
+String Canvas::getElementsString() {
+  String res; 
+  for (auto it = elements.begin(); it != elements.end(); it++) {
+    res += (*it)->string + " " + (*it)->x + " " + (*it)->y + " " + (*it)->scroll + " " + (*it)->scrollSpeed;
+    if (next(it) != elements.end()) {
+      res += ",";
+    }
+  }
+
+  return res;
 }
 
 void Canvas::draw(LEDController * controller) {
@@ -69,7 +79,38 @@ void Canvas::draw(LEDController * controller) {
   }
 }
 
+void Canvas::setElements(char * content) {
+  resetElements();
+
+  char * endelementset;
+  char * elementset = strtok_r(content, ",", &endelementset);
+  while(elementset != NULL) {
+    char * values[5];
+    byte index = 0; 
+    char * endelemopt;
+    char * elemopt = strtok_r(elementset, " ", &endelemopt);
+    while (elemopt != NULL) {
+      values[index++] = elemopt;
+      elemopt = strtok_r(NULL, " ", &endelemopt);
+    }
+
+    addElement(
+      new Elements::Text(
+        values[0],
+        atoi(values[1]),
+        atoi(values[2]),
+        (atoi(values[3]) > 0),
+        atoi(values[4])
+      )
+    );
+
+    elementset = strtok_r(NULL, ",", &endelementset);
+  }
+}
+
 void Canvas::setAPI(String name, String url, long refresh, bool active, std::map<String, APIParseRule> parseRules) {
+  resetAPI();
+
   apiobj.isActive = active;
   apiobj.name = name;
   apiobj.url = url;
@@ -88,11 +129,6 @@ void Canvas::resetAPI() {
     delete *i;
   }
   APIElements.clear();
-
-  for (auto i = elements.begin(); i != elements.end(); i++) {
-    delete *i;
-  }
-  elements.clear();
 }
 
 APIData Canvas::getAPIData() {

@@ -94,6 +94,16 @@
                   <p class="help is-danger"><b>type_of_value</b> is one of: 0 (NUMBER), 1 (ICON), 2 (TEXT), 3 (TIME)</p>
                 </div>
               </div>
+              <div class="field">
+                <label class="label">Additional Text Elements</label>
+                <div class="field">
+                  <div class="control">
+                    <textarea class="textarea is-success" id="additionalelements" placeholder="sample1 4 3 false 0,sample2 9 1 true 30"></textarea>
+                    <p class="help is-danger"><b>Format:</b> value x_pos y_pos scrolling scroll_spd (separated by commas)</p>
+                    <p class="help is-danger"><b>scrolling</b> is one of 0 or 1</p>
+                  </div>
+                </div>
+              </div>
               <div class="field is-grouped is-grouped-right">
                 <p class="control">
                   <a class="button is-primary" onclick="formSubmit()">
@@ -120,11 +130,12 @@
         let refresh = document.getElementById("refresh").value;
         let active = document.getElementById("active").checked;
         let parserules = encodeURIComponent(document.getElementById("parserules").value);
+        let additionalelements = encodeURIComponent(document.getElementById("additionalelements").value);
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/apiset", true);
+        xhttp.open("POST", "/canvasset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}`);
+        xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}&additionalelements=${additionalelements}`);
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             window.location.reload();
@@ -145,9 +156,10 @@
           document.getElementById("refresh").value = +apidetails.refreshes;
           document.getElementById("active").checked = apidetails.isActive == "1";
           document.getElementById("parserules").value = apidetails.parseRules;
+          document.getElementById("additionalelements").value = apidetails.additionalElements;
         }
       };
-      xhttp.open("GET", `/apiinfo?index=${+wurl.searchParams.get("index")}`, true);
+      xhttp.open("GET", `/canvasinfo?index=${+wurl.searchParams.get("index")}`, true);
       xhttp.send();
     </script>
   </body>
