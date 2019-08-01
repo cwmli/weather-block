@@ -28,14 +28,6 @@ void LEDController::decrementBrightness() {
   setBrightness(currentBrightness);
 }
 
-void LEDController::incrementSpeed() {
-  if (speed == 1000) {
-    speed = 250;
-  } else {
-    speed += 250;
-  }
-}
-
 uint8_t LEDController::getBrightness() {
   return currentBrightness;
 }
@@ -48,10 +40,6 @@ void LEDController::setBrightness(uint8_t brightness) {
   FastLED.setBrightness(brightness);
 }
 
-void LEDController::setSolidColor(uint8_t r, uint8_t g, uint8_t b) {
-  color.setRGB(r, g, b);
-}
-
 void LEDController::update() {
   FastLED.show();
 }
@@ -61,7 +49,7 @@ void LEDController::reset() {
   resetActiveLeds();
 }
 
-void LEDController::text(String& string, int& x, int& y) {
+void LEDController::text(String& string, int& x, int& y, CRGB& color) {
   int len = string.length();
   int offset = x;
 	for (int i = 0; i < len; i++) {
@@ -78,7 +66,6 @@ void LEDController::text(String& string, int& x, int& y) {
       offset += spc + 1;
     }
   }
-
 
   for (int c = x; c < offset; c++) {
     for (int r = y; r < FONT_Y + 1; r++) {

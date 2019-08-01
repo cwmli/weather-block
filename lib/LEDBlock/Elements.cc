@@ -8,7 +8,7 @@ namespace Elements {
 
       x -= 1;
     }
-    controller->text(string, x, y);
+    controller->text(string, x, y, color);
   }
 
   void Icon::draw(LEDController * controller){
