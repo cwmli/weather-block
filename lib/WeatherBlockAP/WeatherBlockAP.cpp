@@ -142,7 +142,8 @@ void WeatherBlockAP::update() {
   }
 
   if (!isTimeclientRunning) {
-    Serial.println("WiFi connected: starting timeclient");
+    Serial.printf("WiFi connected: local ip is %s\n",  WiFi.localIP().toString().c_str());
+    Serial.println("starting timeclient...");
     timeClient.begin();
     isTimeclientRunning = true;
   }

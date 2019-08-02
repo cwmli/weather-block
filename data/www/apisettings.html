@@ -98,7 +98,14 @@
                 <label class="label">Additional Text Elements</label>
                 <div class="field">
                   <div class="control">
-                    <textarea class="textarea is-success" id="additionalelements" placeholder="sample1 4 3 false 0,sample2 9 1 true 30"></textarea>
+                    <input type="color" name="colorpicker" onchange="updateColorHelper(event)">
+                    <input readonly type="text" name="colorpicker" onchange="updateColorHelper(event)">
+                    <p class="help is-danger">HEX color picker</p>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control">
+                    <textarea class="textarea is-success" id="additionalelements" placeholder="sample1 ffffff 4 3 false 0,sample2 ffffff 9 1 true 30"></textarea>
                     <p class="help is-danger"><b>Format:</b> value hex_color x_pos y_pos scrolling scroll_spd (separated by commas)</p>
                     <p class="help is-danger"><b>scrolling</b> is one of 0 or 1</p>
                   </div>
@@ -122,6 +129,13 @@
       </div>
     </section>
     <script>
+      function updateColorHelper(ev) {
+        let clrInputs = document.getElementsByName("colorpicker");
+        clrInputs.forEach(e => {
+          e.value = ev.target.value;
+        });
+      }
+
       var wurl = new URL(window.location.href);
 
       function formSubmit() {
