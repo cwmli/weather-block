@@ -7,10 +7,10 @@
 #include "Icons.h"
 
 void Canvas::update() {
-  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
+  for (auto i = APIElements[activeSubCanvas].begin(); i != APIElements[activeSubCanvas].end(); i++) {
     delete *i;
   }
-  APIElements.clear();
+  APIElements[activeSubCanvas].clear();
   
   for (auto const &i : apiobj.parseRules) {
     // i.first contains the key (String)
@@ -39,46 +39,53 @@ void Canvas::update() {
         break;
     }
 
-    APIElements.push_back(elem);
+    APIElements[activeSubCanvas].push_back(elem);
+  }
+}
+
+void Canvas::draw(LEDController * controller) {
+  for (auto i = APIElements[activeSubCanvas].begin(); i != APIElements[activeSubCanvas].end(); i++) {
+    (*i)->draw(controller);
+  }
+  
+  for (auto i = elements[activeSubCanvas].begin(); i != elements[activeSubCanvas].end(); i++) {
+    (*i)->draw(controller);
+  }
+}
+
+void Canvas::incrementActiveSubCanvas() {
+  activeSubCanvas += 1;
+  if (activeSubCanvas == SUBCANVAS_LIMIT) {
+    activeSubCanvas = 0;
   }
 }
 
 void Canvas::addElement(Elements::Text * e) {
-  elements.push_back(e);
+  elements[activeSubCanvas].push_back(e);
 }
 
 void Canvas::resetElements() {
-  for (auto i = elements.begin(); i != elements.end(); i++) {
+  for (auto i = elements[activeSubCanvas].begin(); i != elements[activeSubCanvas].end(); i++) {
     delete *i;
   }
-  elements.clear();
+  elements[activeSubCanvas].clear();
 }
 
 std::vector<Elements::Text *> Canvas::getElements() {
-  return elements;
+  return elements[activeSubCanvas];
 }
 
 String Canvas::getElementsString() {
   String res;
-  for (auto it = elements.begin(); it != elements.end(); it++) {
+  for (auto it = elements[activeSubCanvas].begin(); it != elements[activeSubCanvas].end(); it++) {
     unsigned long hex = ((*it)->color.r << 16) | ((*it)->color.g << 8) | (*it)->color.b;
     res += (*it)->string + " " + String(hex, HEX) + " " + (*it)->x + " " + (*it)->y + " " + (*it)->scroll + " " + (*it)->scrollSpeed;
-    if (next(it) != elements.end()) {
+    if (next(it) != elements[activeSubCanvas].end()) {
       res += ",";
     }
   }
 
   return res;
-}
-
-void Canvas::draw(LEDController * controller) {
-  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
-    (*i)->draw(controller);
-  }
-  
-  for (auto i = elements.begin(); i != elements.end(); i++) {
-    (*i)->draw(controller);
-  }
 }
 
 void Canvas::setElements(char * content) {
@@ -128,10 +135,10 @@ void Canvas::resetAPI() {
   apiobj.refreshTime = 0;
   apiobj.parseRules = std::map<String, APIParseRule>();
 
-  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
+  for (auto i = APIElements[activeSubCanvas].begin(); i != APIElements[activeSubCanvas].end(); i++) {
     delete *i;
   }
-  APIElements.clear();
+  APIElements[activeSubCanvas].clear();
 }
 
 APIData Canvas::getAPIData() {

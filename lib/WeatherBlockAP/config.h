@@ -8,6 +8,7 @@
 #define WWW_DIR "/www"
 
 #define API_LIMIT 3
+#define SUBCANVAS_LIMIT 3
 
 #define NTP_POOL_URL "pool.ntp.org"
 #define NTP_DEFAULT_TIMEOFFSET -21600 //GMT -6
