@@ -30,6 +30,7 @@ void Canvas::update() {
         /* Default to Elements::Text */
         elem = new Elements::Text(
           apiobj.data[i.first], 
+          i.second.color,
           i.second.x,
           i.second.y,
           false,

@@ -11,6 +11,8 @@ enum APIValueType {
 struct APIParseRule {
   int x;
   int y;
+  // color is not used for APIValueType::ICON
+  CRGB color;
   APIValueType type;
 };
 

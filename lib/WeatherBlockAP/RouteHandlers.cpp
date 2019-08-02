@@ -179,7 +179,7 @@ void RouteHandlers::postSetCanvas(Canvas * canvases) {
     char * endparserule;
     char * parserule = strtok_r(allrules, ",", &endparserule);
     while(parserule != NULL) {
-      char * values[4];
+      char * values[5];
       byte index = 0; 
       char * endrule;
       char * rule = strtok_r(parserule, " ", &endrule);
@@ -193,7 +193,8 @@ void RouteHandlers::postSetCanvas(Canvas * canvases) {
         APIParseRule{
           atoi(values[1]),
           atoi(values[2]),
-          static_cast<APIValueType>(atoi(values[3]))
+          CRGB(strtoul(values[3], NULL, HEX)),
+          static_cast<APIValueType>(atoi(values[4]))
         }
       ));
 

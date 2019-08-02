@@ -26,7 +26,12 @@ struct APIData {
   String parseRulesString() {
     String res; 
     for (auto it = parseRules.begin(); it != parseRules.end(); it++) {
-      res += it->first + " " + it->second.x + " " + it->second.y + " " + it->second.type;
+      if (it->second.type == APIValueType::ICON) {
+        res += it->first + " " + it->second.x + " " + it->second.y + " ffffff " + it->second.type;
+      } else {
+        unsigned long hex = (it->second.color.r << 16) | (it->second.color.g << 8) | (it->second.color.b);
+        res += it->first + " "  + it->second.x + " " + it->second.y + " " + String(hex, HEX) + " " + it->second.type;
+      }
       if (next(it) != parseRules.end()) {
         res += ",";
       }
