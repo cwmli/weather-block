@@ -19,27 +19,12 @@ class CRGB;
 
 class LEDController {
   CRGB leds[NUM_LEDS];
-  // LET 0 be SOLID
-  //     1 be BREATHING
-  //     2 be COLOR CYCLE
-  uint8_t currentStyle;
+
   uint8_t currentBrightness;
-
-  CRGB color;
-
-  // breatheTimer, cycleTimer
-  unsigned long styleTimer;
-  uint8_t cycle;
-  uint16_t speed;
-
-  int testIndex = 0;
 
 public:
   LEDController() {
     currentBrightness = DEFAULT_BRIGHTNESS;
-    currentStyle = 3;
-    color = CRGB::White;
-    speed = 250;
   }
 
   void init();
@@ -48,19 +33,15 @@ public:
 
   void decrementBrightness();
 
-  void incrementSpeed();
-
   uint8_t getBrightness();
 
   void setBrightness(uint8_t brightness);
-
-  void setSolidColor(uint8_t r, uint8_t g, uint8_t b);
 
   void update();
 
   void reset();
 
-  void text(String& string, int& x, int& y);
+  void text(String& string, int& x, int& y, CRGB& color);
 
   void icon(const Icons::Base * icon, int& x, int& y);
 

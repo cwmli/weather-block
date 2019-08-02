@@ -85,12 +85,21 @@
                 </div>
               </div>
               <div class="field">
+                <label class="label">HEX color picker</label>
+                <div class="field">
+                  <div class="control">
+                    <input type="color" name="colorpicker" onchange="updateColorHelper(event)">
+                    <input readonly type="text" name="colorpicker" onchange="updateColorHelper(event)">
+                  </div>
+                </div>
+              </div>
+              <div class="field">
                 <label class="label">Parse Rules</label>
                 <div class="field">
                   <div class="control">
-                    <textarea class="textarea is-success" id="parserules" placeholder="arg1 1 1 0,arg2 5 3 2"></textarea>
+                    <textarea class="textarea is-success" id="parserules" placeholder="arg1 1 1 ffffff 0,arg2 5 3 ffffff 2"></textarea>
                   </div>
-                  <p class="help is-danger"><b>Format:</b> name_of_property x_pos y_pos type_of_value (separated by commas)</p>
+                  <p class="help is-danger"><b>Format:</b> name_of_property x_pos y_pos hex_color type_of_value (separated by commas)</p>
                   <p class="help is-danger"><b>type_of_value</b> is one of: 0 (NUMBER), 1 (ICON), 2 (TEXT), 3 (TIME)</p>
                 </div>
               </div>
@@ -98,8 +107,8 @@
                 <label class="label">Additional Text Elements</label>
                 <div class="field">
                   <div class="control">
-                    <textarea class="textarea is-success" id="additionalelements" placeholder="sample1 4 3 false 0,sample2 9 1 true 30"></textarea>
-                    <p class="help is-danger"><b>Format:</b> value x_pos y_pos scrolling scroll_spd (separated by commas)</p>
+                    <textarea class="textarea is-success" id="additionalelements" placeholder="sample1 ffffff 4 3 false 0,sample2 ffffff 9 1 true 30"></textarea>
+                    <p class="help is-danger"><b>Format:</b> value hex_color x_pos y_pos scrolling scroll_spd (separated by commas)</p>
                     <p class="help is-danger"><b>scrolling</b> is one of 0 or 1</p>
                   </div>
                 </div>
@@ -122,6 +131,13 @@
       </div>
     </section>
     <script>
+      function updateColorHelper(ev) {
+        let clrInputs = document.getElementsByName("colorpicker");
+        clrInputs.forEach(e => {
+          e.value = ev.target.value;
+        });
+      }
+
       var wurl = new URL(window.location.href);
 
       function formSubmit() {

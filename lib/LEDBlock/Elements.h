@@ -24,8 +24,13 @@ namespace Elements {
 
   struct Text : Generic {
     String string;
+    CRGB color;
 
-    Text(String str, int x, int y, bool s, int spd) : Generic(x, y, s, spd), string(str) {};
+    Text(String str, int x, int y, bool s, int spd) : Generic(x, y, s, spd), string(str) {
+      color = CRGB::White;
+    };
+
+    Text(String str, CRGB color, int x, int y, bool s, int spd) : Generic(x, y, s, spd), string(str), color(color) {};
 
     ~Text() {};
 

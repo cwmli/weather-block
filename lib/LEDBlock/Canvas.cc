@@ -30,6 +30,7 @@ void Canvas::update() {
         /* Default to Elements::Text */
         elem = new Elements::Text(
           apiobj.data[i.first], 
+          i.second.color,
           i.second.x,
           i.second.y,
           false,
@@ -58,9 +59,10 @@ std::vector<Elements::Text *> Canvas::getElements() {
 }
 
 String Canvas::getElementsString() {
-  String res; 
+  String res;
   for (auto it = elements.begin(); it != elements.end(); it++) {
-    res += (*it)->string + " " + (*it)->x + " " + (*it)->y + " " + (*it)->scroll + " " + (*it)->scrollSpeed;
+    unsigned long hex = ((*it)->color.r << 16) | ((*it)->color.g << 8) | (*it)->color.b;
+    res += (*it)->string + " " + String(hex, HEX) + " " + (*it)->x + " " + (*it)->y + " " + (*it)->scroll + " " + (*it)->scrollSpeed;
     if (next(it) != elements.end()) {
       res += ",";
     }
@@ -85,7 +87,7 @@ void Canvas::setElements(char * content) {
   char * endelementset;
   char * elementset = strtok_r(content, ",", &endelementset);
   while(elementset != NULL) {
-    char * values[5];
+    char * values[6];
     byte index = 0; 
     char * endelemopt;
     char * elemopt = strtok_r(elementset, " ", &endelemopt);
@@ -93,14 +95,15 @@ void Canvas::setElements(char * content) {
       values[index++] = elemopt;
       elemopt = strtok_r(NULL, " ", &endelemopt);
     }
-
+    
     addElement(
       new Elements::Text(
         values[0],
-        atoi(values[1]),
+        CRGB(strtoul(values[1], NULL, HEX)),
         atoi(values[2]),
-        (atoi(values[3]) > 0),
-        atoi(values[4])
+        atoi(values[3]),
+        (atoi(values[4]) > 0),
+        atoi(values[5])
       )
     );
 
