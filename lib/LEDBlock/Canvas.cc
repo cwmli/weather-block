@@ -7,16 +7,16 @@
 #include "Icons.h"
 
 void Canvas::update() {
-  for (auto i = APIElements[activeSubCanvas].begin(); i != APIElements[activeSubCanvas].end(); i++) {
+  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
     delete *i;
   }
-  APIElements[activeSubCanvas].clear();
+  APIElements.clear();
   
-  for (auto const &i : apiobj.parseRules) {
+  for (auto const &i : placementRules[activeSubCanvas]) {
     // i.first contains the key (String)
     // i.second contains an APIParseRule object
     Elements::Generic * elem;
-    switch (i.second.type) {
+    switch (apiobj.parseRules[i.first].type) {
       case APIValueType::ICON:
         elem = new Elements::Icon(
           i.second.x,
@@ -39,18 +39,48 @@ void Canvas::update() {
         break;
     }
 
-    APIElements[activeSubCanvas].push_back(elem);
+    APIElements.push_back(elem);
   }
 }
 
 void Canvas::draw(LEDController * controller) {
-  for (auto i = APIElements[activeSubCanvas].begin(); i != APIElements[activeSubCanvas].end(); i++) {
+  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
     (*i)->draw(controller);
   }
   
   for (auto i = elements[activeSubCanvas].begin(); i != elements[activeSubCanvas].end(); i++) {
     (*i)->draw(controller);
   }
+}
+
+void Canvas::setSubCanvasParseRule(byte index, char * content) {
+  std::map<String, APIPlacementRule> places;
+
+  char * endparserule;
+  char * parserule = strtok_r(content, ",", &endparserule);
+  while(parserule != NULL) {
+    char * values[4];
+    byte index = 0; 
+    char * endrule;
+    char * rule = strtok_r(parserule, " ", &endrule);
+    while (rule != NULL) {
+      values[index++] = rule;
+      rule = strtok_r(NULL, " ", &endrule);
+    }
+
+    places.insert(std::make_pair(
+      values[0],
+      APIPlacementRule{
+        atoi(values[1]),
+        atoi(values[2]),
+        CRGB(strtoul(values[3], NULL, HEX))
+      }
+    ));
+
+    // Serial.printf("Parserule: %s | Tokens: %s, %s, %s, %s\n", parserule, values[0], values[1], values[2], values[3]);
+    parserule = strtok_r(NULL, ",", &endparserule);
+  }
+  // placementRules[index] = places;
 }
 
 void Canvas::incrementActiveSubCanvas() {
@@ -118,27 +148,29 @@ void Canvas::setElements(char * content) {
   }
 }
 
-void Canvas::setAPI(String name, String url, long refresh, bool active, std::map<String, APIParseRule> parseRules) {
+void Canvas::setAPI(String name, String url, long refresh, bool active, char * parseRules) {
   resetAPI();
 
   apiobj.isActive = active;
   apiobj.name = name;
   apiobj.url = url;
   apiobj.refreshTime = refresh;
-  apiobj.parseRules = parseRules;
+  apiobj.parseRulesString(parseRules);
 }
 
 void Canvas::resetAPI() {
+  std::fill(std::begin(placementRules), std::end(placementRules), std::map<String, APIPlacementRule>());
+
   apiobj.isActive = false;
   apiobj.name = "";
   apiobj.url = "";
   apiobj.refreshTime = 0;
   apiobj.parseRules = std::map<String, APIParseRule>();
 
-  for (auto i = APIElements[activeSubCanvas].begin(); i != APIElements[activeSubCanvas].end(); i++) {
+  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
     delete *i;
   }
-  APIElements[activeSubCanvas].clear();
+  APIElements.clear();
 }
 
 APIData Canvas::getAPIData() {

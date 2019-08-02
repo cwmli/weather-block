@@ -6,13 +6,15 @@
 #include <Arduino.h>
 #include "Elements.h"
 #include "APIData.h"
+#include "APIPlacementRule.h"
 
 class Canvas {
 
   byte activeSubCanvas = 0;
   std::vector<Elements::Text *> elements[SUBCANVAS_LIMIT];
+  std::map<String, APIPlacementRule> placementRules[SUBCANVAS_LIMIT];
 
-  std::vector<Elements::Generic *> APIElements[SUBCANVAS_LIMIT];
+  std::vector<Elements::Generic *> APIElements;
   APIData apiobj;
 
 public:
@@ -23,6 +25,8 @@ public:
   void update();
 
   void draw(LEDController * controller);
+
+  void setSubCanvasParseRule(byte index, char * content);
 
   void incrementActiveSubCanvas();
 
@@ -36,7 +40,7 @@ public:
 
   void setElements(char * content);
 
-  void setAPI(String name, String url, long refresh, bool active, std::map<String, APIParseRule> parseRules);
+  void setAPI(String name, String url, long refresh, bool active, char * parseRules);
 
   void resetAPI();
 
