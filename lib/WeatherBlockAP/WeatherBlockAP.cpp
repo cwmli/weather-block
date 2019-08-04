@@ -170,11 +170,13 @@ void WeatherBlockAP::decrementBrightness() {
 }
 
 void WeatherBlockAP::incrementActiveCanvas() {
+  canvas[activeCanvas].resetSubCanvasOffset();
   activeCanvas = min(activeCanvas + 1, API_LIMIT - 1);
   Serial.printf("[INFO] Setting activeCanvas to: %d\n", activeCanvas);
 }
 
 void WeatherBlockAP::decrementActiveCanvas() {
+  canvas[activeCanvas].resetSubCanvasOffset();
   activeCanvas = max(activeCanvas - 1, 0);
   Serial.printf("[INFO] Setting activeCanvas to: %d\n", activeCanvas);
 }
