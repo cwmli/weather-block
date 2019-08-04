@@ -115,7 +115,7 @@
               </div>
               <div class="field is-grouped is-grouped-right">
                 <p class="control">
-                  <a class="button is-primary" onclick="formSubmit()">
+                  <a class="button is-primary" id="submitButton" onclick="formSubmit()">
                     Save
                   </a>
                 </p>
@@ -148,13 +148,18 @@
         let parserules = encodeURIComponent(document.getElementById("parserules").value);
         let additionalelements = encodeURIComponent(document.getElementById("additionalelements").value);
 
+        submitButton.classList.add("is-primary");
+        submitButton.classList.remove("is-danger");
+        document.getElementById("submitButton").classList.add("is-loading");
+
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/canvasset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}&additionalelements=${additionalelements}`);
         xhttp.onreadystatechange = function() {
+          let submitButton = document.getElementById("submitButton");
           if (this.readyState == 4 && this.status == 200) {
-            window.location.reload();
+            submitButton.classList.remove("is-loading");
           }
         };
       }
