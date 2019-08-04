@@ -25,7 +25,7 @@ void Canvas::update() {
           0,
           apiobj.data[i.first]
         );
-        elem->xOffset = subCanvasOffset;
+        elem->xOffset = -subCanvasOffset;
         break;
       default:
         /* Default to Elements::Text */
@@ -37,7 +37,7 @@ void Canvas::update() {
           false,
           0
         );
-        elem->xOffset = subCanvasOffset;
+        elem->xOffset = -subCanvasOffset;
         break;
     }
 
@@ -45,7 +45,7 @@ void Canvas::update() {
   }
 
   for (auto i = elements.begin(); i != elements.end(); i++) {
-    (*i)->xOffset = subCanvasOffset;
+    (*i)->xOffset = -subCanvasOffset;
   }
 }
 
