@@ -9,6 +9,8 @@ BtnState brightnessBtnDecr(D8);
 BtnState activeCanvasBtnIncr(D5);
 BtnState activeCanvasBtnDecr(D6);
 
+BtnState subCanvasBtn(D0);
+
 void setup() {
   wbAP.init();
 
@@ -19,6 +21,8 @@ void setup() {
   pinMode(D7, INPUT);
   pinMode(D6, INPUT);
   pinMode(D5, INPUT);
+
+  pinMode(D0, INPUT);
 }
 
 void loop() {
@@ -28,6 +32,8 @@ void loop() {
   uint8_t brightnessBtnIncrState = brightnessBtnIncr.get();
   uint8_t activeCanvasBtnDecrState = activeCanvasBtnDecr.get();
   uint8_t activeCanvasBtnIncrState = activeCanvasBtnIncr.get();
+
+  uint8_t subCanvasBtnState = subCanvasBtn.get();
 
   if (brightnessBtnDecrState == S_PRESS) {
     wbAP.decrementBrightness();
@@ -41,4 +47,8 @@ void loop() {
   if (activeCanvasBtnIncrState == S_PRESS) {
     wbAP.incrementActiveCanvas();
   }
+
+  if (subCanvasBtnState == S_PRESS) {
+    wbAP.incrementSubCanvas();
+  } 
 }

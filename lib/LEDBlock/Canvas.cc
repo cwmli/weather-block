@@ -25,6 +25,7 @@ void Canvas::update() {
           0,
           apiobj.data[i.first]
         );
+        elem->xOffset = -subCanvasOffset;
         break;
       default:
         /* Default to Elements::Text */
@@ -36,10 +37,45 @@ void Canvas::update() {
           false,
           0
         );
+        elem->xOffset = -subCanvasOffset;
         break;
     }
 
     APIElements.push_back(elem);
+  }
+
+  for (auto i = elements.begin(); i != elements.end(); i++) {
+    (*i)->xOffset = -subCanvasOffset;
+  }
+}
+
+void Canvas::draw(LEDController * controller) {
+  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
+    (*i)->draw(controller);
+  }
+  
+  for (auto i = elements.begin(); i != elements.end(); i++) {
+    (*i)->draw(controller);
+  }
+}
+
+void Canvas::incrementSubCanvasOffset() {
+  subCanvasOffset += SUBCANVAS_OFFSET;
+  if (subCanvasOffset > SUBCANVAS_OFFSET_LIMIT) {
+    subCanvasOffset = 0;
+  }
+  Serial.printf("[INFO] Setting subCanvasOffset to: %d\n", subCanvasOffset);
+}
+
+void Canvas::resetSubCanvasOffset() {
+  subCanvasOffset = 0;
+
+  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
+    (*i)->xOffset = subCanvasOffset;
+  }
+
+  for (auto i = elements.begin(); i != elements.end(); i++) {
+    (*i)->xOffset = subCanvasOffset;
   }
 }
 
@@ -71,15 +107,6 @@ String Canvas::getElementsString() {
   return res;
 }
 
-void Canvas::draw(LEDController * controller) {
-  for (auto i = APIElements.begin(); i != APIElements.end(); i++) {
-    (*i)->draw(controller);
-  }
-  
-  for (auto i = elements.begin(); i != elements.end(); i++) {
-    (*i)->draw(controller);
-  }
-}
 
 void Canvas::setElements(char * content) {
   resetElements();

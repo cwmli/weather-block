@@ -49,7 +49,7 @@ void LEDController::reset() {
   resetActiveLeds();
 }
 
-void LEDController::text(String& string, int& x, int& y, CRGB& color) {
+void LEDController::text(String& string, int x, int y, CRGB& color) {
   int len = string.length();
   int offset = x;
 	for (int i = 0; i < len; i++) {
@@ -90,7 +90,7 @@ CRGB LEDController::wheel(byte pos) {
   }
 }
 
-void LEDController::icon(const Icons::Base * icon, int& x, int& y) {
+void LEDController::icon(const Icons::Base * icon, int x, int y) {
   for (int h = 0; h < ICON_HEIGHT; h++) {
     for (int w = 0; w < ICON_WIDTH; w++) {
       if (icon->cdata[h][w] == 0) {

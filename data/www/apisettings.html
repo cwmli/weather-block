@@ -95,6 +95,10 @@
               </div>
               <div class="field">
                 <label class="label">Parse Rules</label>
+                <p class="help is-primary">
+                  <span class="is-danger">x_pos</span> can be values from 0 to 71 (inclusive; although to view beyond 24 you need to use the subCanvasOffset button)<br/>
+                  <span class="is-danger">y_pos</span> can be values from 0 to 7 (inclusive)
+                </p>
                 <div class="field">
                   <div class="control">
                     <textarea class="textarea is-success" id="parserules" placeholder="arg1 1 1 ffffff 0,arg2 5 3 ffffff 2"></textarea>
@@ -115,7 +119,7 @@
               </div>
               <div class="field is-grouped is-grouped-right">
                 <p class="control">
-                  <a class="button is-primary" onclick="formSubmit()">
+                  <a class="button is-primary" id="submitButton" onclick="formSubmit()">
                     Save
                   </a>
                 </p>
@@ -148,13 +152,18 @@
         let parserules = encodeURIComponent(document.getElementById("parserules").value);
         let additionalelements = encodeURIComponent(document.getElementById("additionalelements").value);
 
+        submitButton.classList.add("is-primary");
+        submitButton.classList.remove("is-danger");
+        document.getElementById("submitButton").classList.add("is-loading");
+
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/canvasset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(`index=${+wurl.searchParams.get("index")}&name=${name}&url=${url}&refresh=${refresh}&active=${active}&parserules=${parserules}&additionalelements=${additionalelements}`);
         xhttp.onreadystatechange = function() {
+          let submitButton = document.getElementById("submitButton");
           if (this.readyState == 4 && this.status == 200) {
-            window.location.reload();
+            submitButton.classList.remove("is-loading");
           }
         };
       }

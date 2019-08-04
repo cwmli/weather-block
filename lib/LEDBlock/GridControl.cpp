@@ -78,10 +78,14 @@ int fillChar(uint8_t row, uint8_t col, char c) {
     // lower case characters
     } else if (c - LCHAR_OFFSET < 26 && c - LCHAR_OFFSET >= 0) {
       binChar = pgm_read_byte(&LCHARACTERS[c - LCHAR_OFFSET][y]);
-      if (c == 105) base = B1;   //i
       if (c == 106) base = B100; //j
       if (c == 108) base = B10;  //l
-      width = log(base) / log(2);
+      width = (log(base) / log(2)) + 1;
+
+      if (c == 105) { //i
+        base = B1;
+        width = 1;
+      }
     } else if (c == CHAR_MINUS || c == CHAR_PLUS || c == CHAR_COLON) {
 
       base = B100;
