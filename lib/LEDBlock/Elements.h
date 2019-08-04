@@ -11,11 +11,16 @@ namespace Elements {
   struct Generic {
     int x;
     int y;
+    int xOffset;
+    int yOffset;
     bool scroll;
     unsigned int scrollSpeed;
     unsigned long lastScrollUpdate;
 
-    Generic(int x, int y, bool s, unsigned int spd) : x(x), y(y), scroll(s), scrollSpeed(spd) {};
+    Generic(int x, int y, bool s, unsigned int spd) : x(x), y(y), scroll(s), scrollSpeed(spd) {
+      xOffset = 0;
+      yOffset = 0;
+    };
 
     virtual ~Generic() {};
 

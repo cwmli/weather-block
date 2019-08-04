@@ -8,7 +8,7 @@ namespace Elements {
 
       x -= 1;
     }
-    controller->text(string, x, y, color);
+    controller->text(string, x + xOffset, y + yOffset, color);
   }
 
   void Icon::draw(LEDController * controller){
@@ -25,6 +25,6 @@ namespace Elements {
     else if (iconStr == "partly-cloudy-day")   { memcpy_P(&resolvedIcon, &Icons::Weather[7], sizeof(Icons::Base)); }
     else                                       { memcpy_P(&resolvedIcon, &Icons::Weather[0], sizeof(Icons::Base)); }
 
-    controller->icon(&resolvedIcon, x, y);
+    controller->icon(&resolvedIcon, x + xOffset, y + yOffset);
   }  
 }

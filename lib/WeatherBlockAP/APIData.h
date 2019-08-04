@@ -39,10 +39,6 @@ struct APIData {
 
     return res;
   }
-
-  void parseRulesString(String s) {
-    
-  }
 };
 
 #endif

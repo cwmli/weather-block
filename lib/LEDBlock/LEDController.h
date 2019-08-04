@@ -41,9 +41,9 @@ public:
 
   void reset();
 
-  void text(String& string, int& x, int& y, CRGB& color);
+  void text(String& string, int x, int y, CRGB& color);
 
-  void icon(const Icons::Base * icon, int& x, int& y);
+  void icon(const Icons::Base * icon, int x, int y);
 
 private:
 
