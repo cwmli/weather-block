@@ -17,6 +17,9 @@ namespace RouteHandlers {
   void getPollWiFi();
   void postDisconnectWiFi();
 
+  void getWiFiScan();
+  void getPollWiFiScan();
+
   // Canvas control routes
   void getAllCanvasInfo(Canvas * canvases);
   void getCanvasInfo(Canvas * canvases);

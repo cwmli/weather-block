@@ -39,6 +39,9 @@ void WeatherBlockAP::init() {
   server.on("/wifistatus", HTTP_GET, RouteHandlers::getPollWiFi);
   server.on("/wifidisconnect", HTTP_POST, RouteHandlers::postDisconnectWiFi);
 
+  server.on("/networkscan", HTTP_GET, RouteHandlers::getWiFiScan);
+  server.on("/networkstatus", HTTP_GET, RouteHandlers::getPollWiFiScan);
+
   server.on("/canvasinfoall", HTTP_GET, [&](){ RouteHandlers::getAllCanvasInfo(canvas); });
   server.on("/canvasinfo", HTTP_GET, [&](){ RouteHandlers::getCanvasInfo(canvas); });
   server.on("/canvasreset", HTTP_POST, [&](){ RouteHandlers::postResetCanvas(canvas); });
