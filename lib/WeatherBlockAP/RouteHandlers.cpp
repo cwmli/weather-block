@@ -75,6 +75,34 @@ void RouteHandlers::postDisconnectWiFi() {
   WiFi.softAP(WB_SSID, WB_PWD);
 }
 
+void RouteHandlers::getWiFiScan() {
+  WiFi.scanDelete();
+  delay(1000);
+  WiFi.scanNetworks(true);
+  server.send(200, "text/plain", "200: Starting network scan");
+}
+
+void RouteHandlers::getPollWiFiScan() {
+  int n = WiFi.scanComplete();
+  if (n == WIFI_SCAN_FAILED || n == WIFI_SCAN_RUNNING) {
+    server.send(200, "text/plain", "{\"scanComplete\": \"false\"}");
+  } else {
+    String obj = "[";
+    for (int i = 0; i < n; i++) {
+      String jsonString = i > 0 ? "," : "";
+      jsonString += "{\"ssid\": \"";
+      jsonString += WiFi.SSID(i);
+      jsonString += "\", \"rssi\": \"";
+      jsonString += WiFi.RSSI(i);
+      jsonString += "\"}";
+
+      obj += jsonString;
+    }
+    obj += "]";
+    server.send(200, "text/plain", "{\"scanComplete\": \"true\", \"data\": \"" + obj + "\"");
+  }
+}
+
 void RouteHandlers::getAllCanvasInfo(Canvas * canvases) {
   String obj = "[";
   for (uint8_t i = 0; i < API_LIMIT; i++) {
