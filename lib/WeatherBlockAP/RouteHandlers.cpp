@@ -85,7 +85,7 @@ void RouteHandlers::getWiFiScan() {
 void RouteHandlers::getPollWiFiScan() {
   int n = WiFi.scanComplete();
   if (n == WIFI_SCAN_FAILED || n == WIFI_SCAN_RUNNING) {
-    server.send(200, "text/plain", "{\"scanComplete\": \"false\"}");
+    server.send(200, "text/plain", "'{\"scanComplete\": \"false\"}'");
   } else {
     String obj = "[";
     for (int i = 0; i < n; i++) {
@@ -99,7 +99,7 @@ void RouteHandlers::getPollWiFiScan() {
       obj += jsonString;
     }
     obj += "]";
-    server.send(200, "text/plain", "{\"scanComplete\": \"true\", \"data\": \"" + obj + "\"");
+    server.send(200, "text/plain", "{\"scanComplete\": \"true\", \"data\": " + obj + "}");
   }
 }
 

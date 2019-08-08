@@ -33,17 +33,24 @@
               </div>
               <iframe class="is-hidden" name="tmp_iframe"></iframe>
               <form id="setwifiForm" action="/setwifi" method="post" target="tmp_iframe">
-                <div class="field">
-                  <p class="control has-icons-left">
-                    <input id="ssid" class="input" name="ssid" type="text" placeholder="SSID">
+                <div id="networklist" class="field is-grouped is-grouped-multiline">
+                </div>
+                <div class="field has-addons">
+                  <p class="control has-icons-left is-expanded">
+                    <input id="ssid" class="input is-primary" name="ssid" type="text" placeholder="SSID">
                     <span class="icon has-text-primary is-small is-left">
                       <i class="fas fa-wifi"></i>
                     </span>
                   </p>
+                  <p class="control">
+                    <a class="button is-primary" id="scanbtn" onclick="scanNetwork()">
+                      Scan
+                    </a>
+                  </p>
                 </div>
                 <div class="field">
                   <p class="control has-icons-left">
-                    <input id="password" class="input" name="password" type="password" placeholder="Password">
+                    <input id="password" class="input is-primary" name="password" type="password" placeholder="Password">
                     <span class="icon has-text-primary is-small is-left">
                       <i class="fas fa-lock"></i>
                     </span>
@@ -61,6 +68,43 @@
       </div>
     </section>
     <script>
+      function scanNetwork() {
+        document.getElementById("scanbtn").classList.add("is-loading");
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 & this.status == 200) {
+            var networkStatusInterval = setInterval(() => {
+              let xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                  let res = JSON.parse(this.responseText);
+                  if (res.scanComplete == "true") {
+                    clearInterval(networkStatusInterval);
+                    document.getElementById("scanbtn").classList.remove("is-loading");
+                    document.getElementById("networklist").innerHTML = "";
+                    res.data.forEach((network, i) => {
+                      document.getElementById("networklist").insertAdjacentHTML("beforeend", 
+                        `<div class="control">
+                          <div class="tags has-addons">
+                            <span class="tag is-info">${network.ssid}</span>
+                            <span class="tag is-dark">${network.rssi} db</span>
+                          </div>
+                        </div>`
+                      );
+                    });
+                  }
+                }
+              }
+              xhttp.open("GET", "/networkstatus");
+              xhttp.send();
+            }, 3000);
+          }
+        }
+        xhttp.open("GET", "/networkscan", true);
+        xhttp.send();
+      }
+
       function formSubmit() {
         let ssid = document.getElementById("ssid").value;
         let password = document.getElementById("password").value;
