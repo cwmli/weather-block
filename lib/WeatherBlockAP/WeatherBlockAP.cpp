@@ -128,12 +128,13 @@ void WeatherBlockAP::update() {
   server.handleClient();
   MDNS.update();
 
-  controller.update();
   if (isBusy) {
     controller.startup();
+    controller.update();
   } else {
     canvas[activeCanvas].update();
     canvas[activeCanvas].draw(&controller);
+    controller.update();
     controller.reset();
   }
 
@@ -146,8 +147,10 @@ void WeatherBlockAP::update() {
 
   isConnected = wStatus == WL_CONNECTED;
   if (!isConnected) {
-    isBusy = false;
+    isBusy = true;
     return;
+  } else {
+    isBusy = false;
   }
 
   if (!isTimeclientRunning) {

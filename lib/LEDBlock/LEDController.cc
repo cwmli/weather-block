@@ -99,12 +99,12 @@ void LEDController::startup() {
   unsigned long time = millis();
 
   if (time - lastUpdate > 300) {
-    CRGB clr = wheel(cycle + 20);
+    CRGB clr = wheel(cycle + 60);
     leds[gridIndex(3, 7 + (lastDot * 4))] = clr; 
     leds[gridIndex(4, 7 + (lastDot * 4))] = clr;
     leds[gridIndex(3, 8 + (lastDot * 4))] = clr; 
     leds[gridIndex(4, 8 + (lastDot * 4))] = clr;
-    lastDot = (lastDot + 1) % 4;
+    lastDot = (lastDot + 1) % 3;
     lastUpdate = time;
   }
 
