@@ -10,6 +10,7 @@
 class WeatherBlockAP {
   bool isTimeclientRunning = false;
   bool isConnected = false;
+  bool isBusy = true;
 
   LEDController controller;
   uint8_t activeCanvas = 0;

@@ -76,6 +76,53 @@ void LEDController::text(String& string, int x, int y, CRGB& color) {
   }
 }
 
+void LEDController::icon(const Icons::Base * icon, int x, int y) {
+  for (int h = 0; h < ICON_HEIGHT; h++) {
+    for (int w = 0; w < ICON_WIDTH; w++) {
+      if (icon->cdata[h][w] == 0) {
+        continue;
+      }
+
+      setActiveLed(y + h, x + w);
+      leds[gridIndex(y + h, x + w)] = icon->palette[icon->cdata[h][w] - 1];
+    }
+  }
+}
+
+void LEDController::startup() {
+  static unsigned long lastUpdate;
+  static unsigned long lastFadeUpdate;
+  static unsigned long lastCycleUpdate;
+  static uint8_t cycle = 0;
+  static uint8_t lastDot = 0;
+
+  unsigned long time = millis();
+
+  if (time - lastUpdate > 300) {
+    CRGB clr = wheel(cycle + 60);
+    leds[gridIndex(3, 7 + (lastDot * 4))] = clr; 
+    leds[gridIndex(4, 7 + (lastDot * 4))] = clr;
+    leds[gridIndex(3, 8 + (lastDot * 4))] = clr; 
+    leds[gridIndex(4, 8 + (lastDot * 4))] = clr;
+    lastDot = (lastDot + 1) % 3;
+    lastUpdate = time;
+  }
+
+  if (time - lastCycleUpdate > 50) {
+    cycle = (cycle + 1) % 255;
+    lastCycleUpdate = time;
+  }
+
+  if (time - lastFadeUpdate > 15) {
+    lastFadeUpdate = time;
+    for (int h = 0; h < ROWS; h++) {
+      for (int w = 0; w < COLUMNS; w++) {
+        leds[gridIndex(h, w)].fadeToBlackBy(10);
+      }
+    }
+  }
+}
+
 CRGB LEDController::wheel(byte pos) {
   if(pos < 85) {
     return CRGB(pos * 3, 255 - pos * 3, 0);
@@ -87,18 +134,5 @@ CRGB LEDController::wheel(byte pos) {
   else {
     pos -= 170;
     return CRGB(0, pos * 3, 255 - pos * 3);
-  }
-}
-
-void LEDController::icon(const Icons::Base * icon, int x, int y) {
-  for (int h = 0; h < ICON_HEIGHT; h++) {
-    for (int w = 0; w < ICON_WIDTH; w++) {
-      if (icon->cdata[h][w] == 0) {
-        continue;
-      }
-
-      setActiveLed(y + h, x + w);
-      leds[gridIndex(y + h, x + w)] = icon->palette[icon->cdata[h][w] - 1];
-    }
   }
 }

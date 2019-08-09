@@ -128,10 +128,16 @@ void WeatherBlockAP::update() {
   server.handleClient();
   MDNS.update();
 
-  canvas[activeCanvas].update();
-  canvas[activeCanvas].draw(&controller);
-  controller.update();
-  controller.reset();
+  if (isBusy) {
+    controller.startup();
+    controller.update();
+  } else {
+    canvas[activeCanvas].update();
+    canvas[activeCanvas].draw(&controller);
+    controller.update();
+    controller.reset();
+  }
+
 
   byte wStatus = WiFi.status();
   if (wStatus == WL_NO_SSID_AVAIL || wStatus == WL_CONNECT_FAILED) {
@@ -141,7 +147,10 @@ void WeatherBlockAP::update() {
 
   isConnected = wStatus == WL_CONNECTED;
   if (!isConnected) {
+    isBusy = true;
     return;
+  } else {
+    isBusy = false;
   }
 
   if (!isTimeclientRunning) {
