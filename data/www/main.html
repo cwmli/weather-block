@@ -65,7 +65,7 @@
               <div class="columns">
                 <div class="column">
                   <span class="has-text-weight-bold">Connected to: </span><span id="ssid"></span>
-                  <a onclick="disconnectWifi()" class="button is-small is-danger is-rounded">
+                  <a onclick="disconnectWifi()" title="Disconnect" class="button is-small is-danger is-rounded">
                     <span class="icon is-small">
                       <i class="fas fa-ban"></i>
                     </span>
@@ -130,48 +130,51 @@
       xhttp.open("GET", "/wbdetails", true);
       xhttp.send();
 
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          var apidetails = JSON.parse(this.responseText);
-          
-          apidetails.forEach(function(apiobj, i) {
-            document.getElementById("apitable").insertAdjacentHTML("beforeend",
-            `<tr><td>${apiobj.name}</td>
-              <td>
-                <textarea class="textarea has-fixed-size" readonly>${apiobj.url}</textarea>
-              </td>
-              <td>${apiobj.isActive}</td>
-              <td>every ${apiobj.refreshes} minutes</td>
-              <td>${apiobj.lastRefresh}</td>
-              <td>
-                <a onclick='toggleActiveAPI(${i})' class="button is-small is-link is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-power-off"></i>
-                  </span>
-                </a>
-                <a onclick='resetAPI(${i})' class="button is-small is-danger is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-ban"></i>
-                  </span>
-                </a>
-                <a onclick='updateAPI(${i})' class="button is-small is-success is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-sync"></i>
-                  </span>
-                </a>
-                <a href='/apisettings.html?index=${i}' class="button is-small is-primary is-rounded">
-                  <span class="icon is-small">
-                    <i class="fas fa-cog"></i>
-                  </span>
-                </a>
-              </td></tr>`
-            );
-          });
-        }
-      };
-      xhttp.open("GET", "/canvasinfoall", true);
-      xhttp.send();
+      function retrieveAPIInfoOverview() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var apidetails = JSON.parse(this.responseText);
+            document.getElementById("apitable").innerHTML = "";
+            apidetails.forEach(function(apiobj, i) {
+              document.getElementById("apitable").insertAdjacentHTML("beforeend",
+              `<tr><td>${apiobj.name}</td>
+                <td>
+                  <textarea class="textarea has-fixed-size" readonly>${apiobj.url}</textarea>
+                </td>
+                <td>${apiobj.isActive}</td>
+                <td>every ${apiobj.refreshes} minutes</td>
+                <td>${apiobj.lastRefresh}</td>
+                <td>
+                  <a onclick='toggleActiveAPI(this, ${i})' title='Disable' class="button is-small is-link is-rounded">
+                    <span class="icon is-small">
+                      <i class="fas fa-power-off"></i>
+                    </span>
+                  </a>
+                  <a onclick='resetAPI(this, ${i})' title='Delete' class="button is-small is-danger is-rounded">
+                    <span class="icon is-small">
+                      <i class="fas fa-ban"></i>
+                    </span>
+                  </a>
+                  <a onclick='updateAPI(this, ${i})' title='Update' class="button is-small is-success is-rounded">
+                    <span class="icon is-small">
+                      <i class="fas fa-sync"></i>
+                    </span>
+                  </a>
+                  <a href='/apisettings.html?index=${i}' title='Settings' class="button is-small is-primary is-rounded">
+                    <span class="icon is-small">
+                      <i class="fas fa-cog"></i>
+                    </span>
+                  </a>
+                </td></tr>`
+              );
+            });
+          }
+        };
+        xhttp.open("GET", "/canvasinfoall", true);
+        xhttp.send();
+      }
+      retrieveAPIInfoOverview();
 
       function disconnectWifi() {
         var xhttp = new XMLHttpRequest();
@@ -179,30 +182,42 @@
         xhttp.send();
       }
 
-      function toggleActiveAPI(index) {
+      function toggleActiveAPI(that, index) {
+        that.classList.add("is-loading");
+
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+          if (this.readyState == 4 && this.status == 200) {
+            retrieveAPIInfoOverview();
+          }
         }
         xhttp.open("POST", "/canvastoggle", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
       }
 
-      function resetAPI(index) {
+      function resetAPI(that, index) {
+        that.classList.add("is-loading");
+
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+          if (this.readyState == 4 && this.status == 200) {
+            retrieveAPIInfoOverview();
+          }
         }
         xhttp.open("POST", "/canvasreset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
       }
 
-      function updateAPI(index) {
+      function updateAPI(that, index) {
+        that.classList.add("is-loading");
+
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+          if (this.readyState == 4 && this.status == 200) {
+            retrieveAPIInfoOverview();
+          }
         }
         xhttp.open("POST", "/canvasfupdate", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
