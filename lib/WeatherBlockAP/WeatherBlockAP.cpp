@@ -47,7 +47,17 @@ void WeatherBlockAP::init() {
   server.on("/canvasreset", HTTP_POST, [&](){ RouteHandlers::postResetCanvas(canvas); });
   server.on("/canvastoggle", HTTP_POST, [&](){ RouteHandlers::postToggleCanvas(canvas); });
   server.on("/canvasset", HTTP_POST, [&](){ RouteHandlers::postSetCanvas(canvas); });
-
+  server.on("/canvasfupdate", HTTP_POST, [&](){
+    if (!server.hasArg("index") || server.arg("index") == NULL) {
+      Serial.println("Invalid index for API");
+      server.send(400, "text/plain", "400: Invalid Request");
+    } else {
+      int i = server.arg("index").toInt();
+      Serial.printf("Forcing update for API: %s\n", canvas[i].getAPIData().name.c_str());
+      canvas[i].updateAPI(timeClient.getEpochTime(), true);
+      server.send(200, "text/plain", "200: Force updated API");
+    }
+  });
 
   server.on("/wbdetails", HTTP_GET, [&]() {
     String ssid = WiFi.SSID();

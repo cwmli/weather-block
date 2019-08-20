@@ -26,7 +26,14 @@
               <h1 class="has-text-weight-bold is-size-5" id="apiname">api_name</h1>
             </div>
             <div class="column">
-              <span class="tag is-light is-medium is-pulled-right">Last refreshed:&nbsp;<span id="refreshed">iso_date</span></span>
+              <span class="tag is-light is-medium is-pulled-right">
+                <a onclick='refreshNow()' id="refreshNowButton" class="button is-small">
+                  <span class="icon is-small">
+                    <i class="fas fa-sync"></i>
+                  </span>
+                </a>
+                &nbsp;Last refreshed:&nbsp;<span id="refreshed">iso_date</span>
+              </span>
             </div>
           </div>
           <div class="columns">
@@ -141,8 +148,24 @@
           e.value = ev.target.value;
         });
       }
-
+      
       var wurl = new URL(window.location.href);
+
+      function refreshNow() {
+        document.getElementById("refreshNowButton").classList.add("is-loading");
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          let refreshNowButton = document.getElementById("refreshNowButton");
+          if (this.readyState == 4 && this.status == 200) {
+            refreshNowButton.classList.remove("is-loading");
+            retrieveAPIInfo();
+          }
+        }
+        xhttp.open("POST", "/canvasfupdate", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`index=${+wurl.searchParams.get("index")}`);     
+      }
 
       function formSubmit() {
         let name = encodeURIComponent(document.getElementById("name").value);
@@ -152,8 +175,6 @@
         let parserules = encodeURIComponent(document.getElementById("parserules").value);
         let additionalelements = encodeURIComponent(document.getElementById("additionalelements").value);
 
-        submitButton.classList.add("is-primary");
-        submitButton.classList.remove("is-danger");
         document.getElementById("submitButton").classList.add("is-loading");
 
         var xhttp = new XMLHttpRequest();
@@ -168,24 +189,27 @@
         };
       }
 
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          var apidetails = JSON.parse(this.responseText);
-          
-          document.getElementById("apiname").innerHTML = apidetails.name;
-          document.getElementById("refreshed").innerHTML = apidetails.lastRefresh;
-          // form
-          document.getElementById("name").value = apidetails.name;
-          document.getElementById("url").value = apidetails.url;
-          document.getElementById("refresh").value = +apidetails.refreshes;
-          document.getElementById("active").checked = apidetails.isActive == "1";
-          document.getElementById("parserules").value = apidetails.parseRules;
-          document.getElementById("additionalelements").value = apidetails.additionalElements;
-        }
-      };
-      xhttp.open("GET", `/canvasinfo?index=${+wurl.searchParams.get("index")}`, true);
-      xhttp.send();
+      function retrieveAPIInfo() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var apidetails = JSON.parse(this.responseText);
+            
+            document.getElementById("apiname").innerHTML = apidetails.name;
+            document.getElementById("refreshed").innerHTML = apidetails.lastRefresh;
+            // form
+            document.getElementById("name").value = apidetails.name;
+            document.getElementById("url").value = apidetails.url;
+            document.getElementById("refresh").value = +apidetails.refreshes;
+            document.getElementById("active").checked = apidetails.isActive == "1";
+            document.getElementById("parserules").value = apidetails.parseRules;
+            document.getElementById("additionalelements").value = apidetails.additionalElements;
+          }
+        };
+        xhttp.open("GET", `/canvasinfo?index=${+wurl.searchParams.get("index")}`, true);
+        xhttp.send();
+      }
+      retrieveAPIInfo();
     </script>
   </body>
 </html>

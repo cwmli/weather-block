@@ -49,7 +49,7 @@ public:
 
   APIData getAPIData();
 
-  void updateAPI(unsigned long curtime);
+  void updateAPI(unsigned long curtime, bool force = false);
 };
 
 #endif
