@@ -155,6 +155,11 @@
                     <i class="fas fa-ban"></i>
                   </span>
                 </a>
+                <a onclick='updateAPI(${i})' class="button is-small is-success is-rounded">
+                  <span class="icon is-small">
+                    <i class="fas fa-sync"></i>
+                  </span>
+                </a>
                 <a href='/apisettings.html?index=${i}' class="button is-small is-primary is-rounded">
                   <span class="icon is-small">
                     <i class="fas fa-cog"></i>
@@ -192,6 +197,16 @@
         xhttp.open("POST", "/canvasreset", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("index=" + index);        
+      }
+
+      function updateAPI(index) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) { window.location.reload(); }
+        }
+        xhttp.open("POST", "/canvasfupdate", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("index=" + index);     
       }
 
       function updateBrightness(ev) {

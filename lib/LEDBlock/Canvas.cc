@@ -169,54 +169,54 @@ void Canvas::toggleAPI() {
   apiobj.isActive = !apiobj.isActive;
 }
 
-void Canvas::updateAPI(unsigned long curtime) {
-    if (!apiobj.isActive || curtime - apiobj.lastRefreshed < apiobj.refreshTime) {
-      return;
-    }
+void Canvas::updateAPI(unsigned long curtime, bool force) {
+  if ((!apiobj.isActive || curtime - apiobj.lastRefreshed < apiobj.refreshTime) && !force) {
+    return;
+  }
 
-    BearSSL::WiFiClientSecure bsslClient;
-    bsslClient.setInsecure();
+  BearSSL::WiFiClientSecure bsslClient;
+  bsslClient.setInsecure();
 
-    HTTPClient https;
+  HTTPClient https;
 
-    Serial.printf("Updating %s\n", apiobj.name.c_str());
-    https.begin(bsslClient, apiobj.url);
+  Serial.printf("Updating %s\n", apiobj.name.c_str());
+  https.begin(bsslClient, apiobj.url);
 
-    int httpcode = https.GET();
+  int httpcode = https.GET();
 
-    if (httpcode > 0) {
-      Serial.printf("[HTTPSRequest] code: %d\n", httpcode);
-      String payload = https.getString();
-      Serial.printf("[HTTPSRequest] payload: \n%s\n", payload.c_str());
-      // Have to do some ghetto stuff
-      std::map<String, APIParseRule> rules = apiobj.parseRules;
-      for (auto it = rules.begin(); it != rules.end(); it++) {
-        int pos = payload.indexOf(it->first);
-        int end = payload.indexOf(",", pos);
-        if (it->second.type == APIValueType::NUMBER) {
-          float temp = payload.substring(pos + it->first.length() + 2, end).toFloat();
-          apiobj.data[it->first] = (int) round(temp);
-        } else if (it->second.type == APIValueType::TIME) {
-          char temp[17];
-          struct tm tm;
-          // Extract to tm struct 
-          payload.substring(pos + it->first.length() + 3, end - 1).toCharArray(temp, 17);
-          strptime(temp, "%Y-%m-%dT%H:%M", &tm);
-          // Reformat to desired output
-          char time[7];
-          strftime(time, 7, "%I:%M%p", &tm);
-          // Convert A,P to a,p
-          if (time[5] == 65) time[5] = 97;
-          if (time[5] == 80) time[5] = 112;
-          apiobj.data[it->first] = time;
-        } else {
-          apiobj.data[it->first] = payload.substring(pos + it->first.length() + 3, end - 1);
-        }
-        Serial.printf("[INFO] %s: %s\n", it->first.c_str(), apiobj.data[it->first].c_str());
+  if (httpcode > 0) {
+    Serial.printf("[HTTPSRequest] code: %d\n", httpcode);
+    String payload = https.getString();
+    Serial.printf("[HTTPSRequest] payload: \n%s\n", payload.c_str());
+    // Have to do some ghetto stuff
+    std::map<String, APIParseRule> rules = apiobj.parseRules;
+    for (auto it = rules.begin(); it != rules.end(); it++) {
+      int pos = payload.indexOf(it->first);
+      int end = payload.indexOf(",", pos);
+      if (it->second.type == APIValueType::NUMBER) {
+        float temp = payload.substring(pos + it->first.length() + 2, end).toFloat();
+        apiobj.data[it->first] = (int) round(temp);
+      } else if (it->second.type == APIValueType::TIME) {
+        char temp[17];
+        struct tm tm;
+        // Extract to tm struct 
+        payload.substring(pos + it->first.length() + 3, end - 1).toCharArray(temp, 17);
+        strptime(temp, "%Y-%m-%dT%H:%M", &tm);
+        // Reformat to desired output
+        char time[7];
+        strftime(time, 7, "%I:%M%p", &tm);
+        // Convert A,P to a,p
+        if (time[5] == 65) time[5] = 97;
+        if (time[5] == 80) time[5] = 112;
+        apiobj.data[it->first] = time;
+      } else {
+        apiobj.data[it->first] = payload.substring(pos + it->first.length() + 3, end - 1);
       }
-    } else {
-      Serial.printf("An error occurred while updating %s\n", apiobj.name.c_str());
+      Serial.printf("[INFO] %s: %s\n", it->first.c_str(), apiobj.data[it->first].c_str());
     }
-    apiobj.lastRefreshed = curtime;
-    https.end();
+  } else {
+    Serial.printf("An error occurred while updating %s\n", apiobj.name.c_str());
+  }
+  apiobj.lastRefreshed = curtime;
+  https.end();
 }
