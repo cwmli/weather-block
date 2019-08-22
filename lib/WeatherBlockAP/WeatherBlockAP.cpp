@@ -35,9 +35,15 @@ void WeatherBlockAP::init() {
   
   SPIFFS.begin();
 
-  server.on("/setwifi", HTTP_POST, RouteHandlers::postWiFi);
+  server.on("/setwifi", HTTP_POST, [&](){
+    RouteHandlers::postWiFi();
+    currentState = IS_CONNECTING;
+  });
   server.on("/wifistatus", HTTP_GET, RouteHandlers::getPollWiFi);
-  server.on("/wifidisconnect", HTTP_POST, RouteHandlers::postDisconnectWiFi);
+  server.on("/wifidisconnect", HTTP_POST, [&](){ 
+    RouteHandlers::postDisconnectWiFi();
+    currentState = IS_IDLING;
+  });
 
   server.on("/networkscan", HTTP_GET, RouteHandlers::getWiFiScan);
   server.on("/networkstatus", HTTP_GET, RouteHandlers::getPollWiFiScan);
@@ -138,8 +144,19 @@ void WeatherBlockAP::update() {
   server.handleClient();
   MDNS.update();
 
-  if (isBusy) {
-    controller.startup();
+  byte wStatus = WiFi.status();
+  if (wStatus == WL_NO_SSID_AVAIL || wStatus == WL_CONNECT_FAILED) {
+    Serial.println("WiFi disconnected: SSID unavailable or password is incorrect, entering SoftAP mode");
+    RouteHandlers::postDisconnectWiFi();
+    currentState = IS_IDLING;
+  }
+
+  if (currentState == IS_IDLING) {
+    // This is the startup state, waiting to be setup with a network
+    controller.idle();
+    controller.update();
+  } else if (currentState == IS_CONNECTING) {
+    controller.busy();
     controller.update();
   } else {
     canvas[activeCanvas].update();
@@ -148,19 +165,11 @@ void WeatherBlockAP::update() {
     controller.reset();
   }
 
-
-  byte wStatus = WiFi.status();
-  if (wStatus == WL_NO_SSID_AVAIL || wStatus == WL_CONNECT_FAILED) {
-    Serial.println("WiFi disconnected: SSID unavailable or password is incorrect, entering SoftAP mode");
-    RouteHandlers::postDisconnectWiFi();
-  }
-
-  isConnected = wStatus == WL_CONNECTED;
-  if (!isConnected) {
-    isBusy = true;
+  /* Break off point, do not proceed if we don't have wifi connection */
+  if (wStatus != WL_CONNECTED) {
     return;
   } else {
-    isBusy = false;
+    currentState = IS_READY;
   }
 
   if (!isTimeclientRunning) {

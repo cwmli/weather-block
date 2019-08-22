@@ -41,7 +41,9 @@ public:
 
   void reset();
 
-  void startup();
+  void idle();
+
+  void busy();
 
   void text(String& string, int x, int y, CRGB& color);
 

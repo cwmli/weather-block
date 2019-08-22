@@ -1,6 +1,10 @@
 #ifndef WEATHERBLOCKAP_H
 #define WEATHERBLOCKAP_H
 
+#define IS_IDLING     0
+#define IS_CONNECTING 1
+#define IS_READY      2
+
 #include <Arduino.h>
 #include <LEDController.h>
 #include <Canvas.h>
@@ -9,8 +13,9 @@
 
 class WeatherBlockAP {
   bool isTimeclientRunning = false;
-  bool isConnected = false;
-  bool isBusy = true;
+
+  uint8_t currentState = IS_IDLING;
+  long stateTimeout;
 
   LEDController controller;
   uint8_t activeCanvas = 0;

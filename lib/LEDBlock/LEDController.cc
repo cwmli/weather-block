@@ -89,7 +89,7 @@ void LEDController::icon(const Icons::Base * icon, int x, int y) {
   }
 }
 
-void LEDController::startup() {
+void LEDController::idle() {
   static unsigned long lastUpdate;
   static unsigned long lastFadeUpdate;
   static unsigned long lastCycleUpdate;
@@ -98,19 +98,49 @@ void LEDController::startup() {
 
   unsigned long time = millis();
 
-  if (time - lastUpdate > 300) {
-    CRGB clr = wheel(cycle + 60);
-    leds[gridIndex(3, 7 + (lastDot * 4))] = clr; 
-    leds[gridIndex(4, 7 + (lastDot * 4))] = clr;
-    leds[gridIndex(3, 8 + (lastDot * 4))] = clr; 
-    leds[gridIndex(4, 8 + (lastDot * 4))] = clr;
-    lastDot = (lastDot + 1) % 3;
+  if (time - lastUpdate > 1600) {
+    CRGB clr = wheel(cycle);
+    for (byte i = 0; i < 3; i++) {
+      leds[gridIndex(3, 7 + (i * 4))] = clr; 
+      leds[gridIndex(4, 7 + (i * 4))] = clr;
+      leds[gridIndex(3, 8 + (i * 4))] = clr; 
+      leds[gridIndex(4, 8 + (i * 4))] = clr;
+    }
     lastUpdate = time;
   }
 
   if (time - lastCycleUpdate > 50) {
     cycle = (cycle + 1) % 255;
     lastCycleUpdate = time;
+  }
+
+  if (time - lastFadeUpdate > 15) {
+    lastFadeUpdate = time;
+    for (int h = 0; h < ROWS; h++) {
+      for (int w = 0; w < COLUMNS; w++) {
+        leds[gridIndex(h, w)].fadeToBlackBy(10);
+      }
+    }
+  }
+}
+
+void LEDController::busy() {
+  static unsigned long lastUpdate;
+  static unsigned long lastFadeUpdate;
+  static uint8_t cycle = 0;
+  static uint8_t lastDot = 0;
+
+  unsigned long time = millis();
+
+  if (time - lastUpdate > 300) {
+    CRGB clr = wheel(cycle);
+    leds[gridIndex(3, 7 + (lastDot * 4))] = clr; 
+    leds[gridIndex(4, 7 + (lastDot * 4))] = clr;
+    leds[gridIndex(3, 8 + (lastDot * 4))] = clr; 
+    leds[gridIndex(4, 8 + (lastDot * 4))] = clr;
+    lastDot = (lastDot + 1) % 3;
+    cycle = (cycle + 60) % 255;
+    lastUpdate = time;
   }
 
   if (time - lastFadeUpdate > 15) {
