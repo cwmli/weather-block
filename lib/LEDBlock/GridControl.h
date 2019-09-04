@@ -107,8 +107,4 @@ void fillActiveLed(uint8_t row, uint8_t col, uint8_t num, bool vertical, bool lf
 // and col to display char c, row and col do not have to be valid
 // returns the width of the character
 int fillChar(uint8_t row, uint8_t col, char c);
-
-// fillNum(c) sets active leds at target location defined by row
-// and col to display int i, row and col do not have to be valid
-void fillNum(uint8_t row, uint8_t col, char i);
 #endif

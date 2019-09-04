@@ -58,13 +58,8 @@ void LEDController::text(String& string, int x, int y, CRGB& color) {
 			continue;
 		}
 
-    if (string[i] >= 48 && string[i] <= 57) {
-      fillNum(y, offset, string[i]);
-      offset += NUM_X + 1;
-    } else {
-		  int spc = fillChar(y, offset, string[i]);
-      offset += spc + 1;
-    }
+    int spc = fillChar(y, offset, string[i]);
+    offset += spc + 1;
   }
 
   for (int c = x; c < offset; c++) {

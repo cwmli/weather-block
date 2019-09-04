@@ -86,6 +86,11 @@ int fillChar(uint8_t row, uint8_t col, char c) {
         base = B1;
         width = 1;
       }
+    // numeric characters
+    } else if (c - NUM_OFFSET < 10 && c - NUM_OFFSET >= 0) {
+      binChar = pgm_read_byte(&NUMBERS[c - NUM_OFFSET][y]);
+      base = B100;
+      width = NUM_X;
     } else if (c == CHAR_MINUS || c == CHAR_PLUS || c == CHAR_COLON) {
 
       base = B100;
@@ -116,32 +121,4 @@ int fillChar(uint8_t row, uint8_t col, char c) {
   }
 
   return width;
-}
-
-// TODO: Might want to merge this into fillChar since its kind of redundant
-void fillNum(uint8_t row, uint8_t col, char c) {
-  // row and col can be out of index so long as parts of c is still in the 
-  // led grid
-
-  const byte base = B100;
-  // retrieve bin representing int i
-  byte binNum;
-
-  for (int y = 0; y < FONT_Y; y++) {
-    if (c - NUM_OFFSET < 10 || c - NUM_OFFSET >= 0) {
-      binNum = pgm_read_byte(&NUMBERS[c - NUM_OFFSET][y]);
-      for (int x = 0; x < NUM_X; x++) {
-        // check if this led should be active
-        if ((binNum & base) > 0) {
-          setActiveLed(row + y, col + x);    
-        }
-
-        binNum = binNum << 1;
-      }
-    } else {
-      for (int x = 0; x < NUM_X; x++) {
-        removeActiveLed(row + y, col + x);
-      }
-    }
-  }
 }
