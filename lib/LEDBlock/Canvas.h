@@ -38,10 +38,9 @@ public:
 
   String getElementsString();
 
-
   void setElements(char * content);
 
-  void setAPI(String name, String url, long refresh, bool active, std::map<String, APIParseRule> parseRules);
+  void setAPI(String name, String url, long refresh, bool active, char * parseRules);
 
   void resetAPI();
 

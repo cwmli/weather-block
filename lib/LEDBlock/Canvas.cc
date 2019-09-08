@@ -138,14 +138,14 @@ void Canvas::setElements(char * content) {
   }
 }
 
-void Canvas::setAPI(String name, String url, long refresh, bool active, std::map<String, APIParseRule> parseRules) {
+void Canvas::setAPI(String name, String url, long refresh, bool active, char * parseRules) {
   resetAPI();
 
   apiobj.isActive = active;
   apiobj.name = name;
   apiobj.url = url;
   apiobj.refreshTime = refresh;
-  apiobj.parseRules = parseRules;
+  apiobj.parseRulesString(parseRules);
 }
 
 void Canvas::resetAPI() {

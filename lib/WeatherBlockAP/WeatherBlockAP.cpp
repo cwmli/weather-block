@@ -121,17 +121,12 @@ void WeatherBlockAP::init() {
          "https://worldclockapi.com/api/json/est/now", 
          30,
          true,
-         std::map<String, APIParseRule> {
-           {"currentDateTime", {1, 1, CRGB::White, APIValueType::TIME}},
-         });
+         "currentDateTime 1 1 ffffff 3");
   canvas[1].setAPI("DarkSky", 
          "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
          60 * 60,
          true,
-         std::map<String, APIParseRule> {
-           {"temperature", {11, 1, CRGB::White, APIValueType::NUMBER}},
-           {"icon", {0, 0, CRGB::White, APIValueType::ICON}}
-         });
+         "temperature 11 1 ffffff 0, icon 0 0 ffffff 1");
   canvas[1].addElement(new Elements::Text("c", 19, 1, false, 0));
   
   server.begin();
