@@ -88,10 +88,6 @@ void resetActiveLeds();
 // col are valid
 void setActiveLed(uint8_t row, uint8_t col);
 
-// setActiveLed(row, col) sets an led index to be a specific value where row
-// col are valid
-void setActiveLed(uint8_t row, uint8_t col, uint8_t val);
-
 // removeActiveLed(row, col) sets an led index to be inactive
 void removeActiveLed(uint8_t row, uint8_t col);
 

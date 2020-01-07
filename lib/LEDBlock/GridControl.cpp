@@ -1,6 +1,6 @@
 #include "GridControl.h"
 
-uint8_t activeLeds[ROWS][COLUMNS];
+uint8_t activeLeds[ROWS][COLUMNS] = {0};
 
 uint8_t gridIndex(uint8_t row, uint8_t col) {
   // check if valid row col values
@@ -17,13 +17,8 @@ void resetActiveLeds() {
 
 void setActiveLed(uint8_t row, uint8_t col) {
   if (row >= 0 && row < ROWS && col >= 0 && col < COLUMNS) {
-    setActiveLed(row, col, 1);
-  }
-}
-
-void setActiveLed(uint8_t row, uint8_t col, uint8_t val) {
-  if (row >= 0 && row < ROWS && col >= 0 && col < COLUMNS) {
-    activeLeds[row][col] = val;
+    // set value to 1 if not dirty, otherwise increment by 1 if dirty
+    activeLeds[row][col] = activeLeds[row][col] == 1 ? activeLeds[row][col] + 1 : 1;
   }
 }
 
@@ -104,6 +99,7 @@ int fillChar(uint8_t row, uint8_t col, char c) {
       if (c == CHAR_PLUS)  binChar = pgm_read_byte(&SCHARACTERS[2][y]);
     }
 
+    // check if we matched a supported character
     if (width > 0) {
       for (int x = 0; x < FONT_X; x++) {
         // check if this led should be active
