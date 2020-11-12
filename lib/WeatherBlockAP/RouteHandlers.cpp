@@ -68,11 +68,8 @@ void RouteHandlers::getPollWiFi() {
 
 void RouteHandlers::postDisconnectWiFi() {
   server.send(200, "text/plain", "true");
-  WiFi.disconnect(true);
+  WiFi.disconnect();
   Serial.println("Disconnected");
-  delay(1000);
-  Serial.println("Starting SoftAP");
-  WiFi.softAP(WB_SSID, WB_PWD);
 }
 
 void RouteHandlers::getWiFiScan() {

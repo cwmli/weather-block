@@ -180,6 +180,7 @@
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/wifidisconnect", true);
         xhttp.send();
+        window.location.reload();
       }
 
       function toggleActiveAPI(that, index) {

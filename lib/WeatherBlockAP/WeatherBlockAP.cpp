@@ -19,7 +19,9 @@ void WeatherBlockAP::init() {
   delay(1000);
   Serial.begin(115200);
   delay(1000);
-  WiFi.softAP(WB_SSID, WB_PWD);
+  WiFi.mode(WIFI_AP_STA);
+  delay(1000);
+  WiFi.softAP(WB_SSID, WB_PWD, 11);
 
   IPAddress wbIP = WiFi.softAPIP();
   Serial.println();
