@@ -2,6 +2,7 @@
 
 uint8_t BtnState::get() {
   uint8_t currentPinState = digitalRead(pin);
+  uint8_t result = N_PRESS;
 
   if (currentPinState == HIGH && lastPinState == LOW) {
     debounceStartTime = millis();
@@ -17,7 +18,6 @@ uint8_t BtnState::get() {
       pressedTime = millis() - initialPressTime;
     }
     
-    uint8_t result = N_PRESS;
     if (lastPinState == HIGH && currentPinState == LOW) {
       // released
       if (pressedTime > S_PRESS_TIME && pressedTime < L_PRESS_TIME) {
@@ -35,4 +35,6 @@ uint8_t BtnState::get() {
     lastPinState = currentPinState;
     return result;
   }
+  
+  return result;
 }

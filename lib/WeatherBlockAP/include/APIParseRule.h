@@ -1,6 +1,8 @@
 #ifndef APIPARSERULE_H
 #define APIPARSERULE_H
 
+#include <FastLED.h>
+
 enum APIValueType {
   NUMBER,
   ICON,

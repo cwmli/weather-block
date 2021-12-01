@@ -32,6 +32,8 @@ uint8_t getActiveLed(uint8_t row, uint8_t col) {
   if (row >= 0 && row < ROWS && col >= 0 && col < COLUMNS) {
     return activeLeds[row][col];
   }
+
+  return 0;
 }
 
 void fillActiveLed(uint8_t row, uint8_t col, uint8_t num, bool vertical, bool lft_dwn) {
