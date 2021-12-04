@@ -146,22 +146,22 @@
                 <td>every ${apiobj.refreshes} minutes</td>
                 <td>${apiobj.lastRefresh}</td>
                 <td>
-                  <a onclick='toggleActiveAPI(this, ${i})' title='Disable' class="button is-small is-link is-rounded">
+                  <a onclick='toggleActiveAPI(this, ${apiobj.index})' title='Disable' class="button is-small is-link is-rounded">
                     <span class="icon is-small">
                       <i class="fas fa-power-off"></i>
                     </span>
                   </a>
-                  <a onclick='resetAPI(this, ${i})' title='Delete' class="button is-small is-danger is-rounded">
+                  <a onclick='resetAPI(this, ${apiobj.index})' title='Delete' class="button is-small is-danger is-rounded">
                     <span class="icon is-small">
                       <i class="fas fa-ban"></i>
                     </span>
                   </a>
-                  <a onclick='updateAPI(this, ${i})' title='Update' class="button is-small is-success is-rounded">
+                  <a onclick='updateAPI(this, ${apiobj.index})' title='Update' class="button is-small is-success is-rounded">
                     <span class="icon is-small">
                       <i class="fas fa-sync"></i>
                     </span>
                   </a>
-                  <a href='/apisettings.html?index=${i}' title='Settings' class="button is-small is-primary is-rounded">
+                  <a href='/apisettings.html?index=${apiobj.index}' title='Settings' class="button is-small is-primary is-rounded">
                     <span class="icon is-small">
                       <i class="fas fa-cog"></i>
                     </span>

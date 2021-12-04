@@ -6,6 +6,8 @@
 #include <TimeLib.h>
 #include <map>
 
+#include "APICanvas.h"
+#include "ClockCanvas.h"
 #include "config.h"
 
 WiFiUDP ntpUDP;
@@ -61,17 +63,9 @@ void WeatherBlockAP::init() {
   server->onNotFound([&]() { wbAPI.getDefault(); });
 
   // --- TEST SETUP API ---
-  canvas[0].setAPI("WorldclockAPI", 
-         "https://worldclockapi.com/api/json/est/now", 
-         30,
-         true,
-         "currentDateTime 1 1 ffffff 3");
-  canvas[1].setAPI("DarkSky", 
-         "https://api.darksky.net/forecast/cd243cdb3889f8ada3fa607612e1ae47/43.5799475,-79.6614369?units=ca&exclude=minutely,hourly,daily,alerts,flags", 
-         60 * 60,
-         true,
-         "temperature 11 1 ffffff 0, icon 0 0 ffffff 1");
-  canvas[1].addElement(new Elements::Text("c", 19, 1, false, 0));
+  canvas[0] = new ClockCanvas();
+  canvas[1] = new APICanvas();
+  canvas[2] = new APICanvas();
   
   server->begin();
   Serial.println("HTTP server started");
@@ -102,8 +96,8 @@ void WeatherBlockAP::update() {
     controller.busy();
     controller.update();
   } else {
-    canvas[activeCanvas].update();
-    canvas[activeCanvas].draw(&controller);
+    canvas[activeCanvas]->update();
+    canvas[activeCanvas]->draw(&controller);
     controller.update();
     controller.reset();
   }
@@ -116,24 +110,24 @@ void WeatherBlockAP::update() {
     }
 
     return;
-  } else {
+  } else if (currentState != IS_READY) {
     currentState = IS_READY;
 
     Serial.printf("WiFi connected: local ip is %s\n",  WiFi.localIP().toString().c_str());
-    Serial.println("starting timeclient...");
+    Serial.println("Starting timeclient...");
     timeClient.begin();
     isTimeclientRunning = true;
 
-    if (timeStatus() == timeNotSet) {
-      setTime(timeClient.getEpochTime());
-    }
+    timeClient.update();
+    Serial.println(timeClient.getFormattedTime());
+    setTime(timeClient.getEpochTime());
   }
 
-  timeClient.update();
-
   /* Update Canvas API Data */
-  for (uint8_t i = 0; i < API_LIMIT; ++i) {
-    canvas[i].updateAPI(timeClient.getEpochTime());
+  for (uint8_t i = 0; i < CANVAS_LIMIT; ++i) {
+    if (canvas[i]->type() == CanvasType::API) {
+      ((APICanvas *)canvas[i])->updateAPI(timeClient.getEpochTime());
+    }
   }
 
 }
@@ -149,17 +143,17 @@ void WeatherBlockAP::decrementBrightness() {
 }
 
 void WeatherBlockAP::incrementActiveCanvas() {
-  canvas[activeCanvas].resetSubCanvasOffset();
-  activeCanvas = min(activeCanvas + 1, API_LIMIT - 1);
+  canvas[activeCanvas]->resetSubCanvasOffset();
+  activeCanvas = min(activeCanvas + 1, CANVAS_LIMIT - 1);
   Serial.printf("[INFO] Setting activeCanvas to: %d\n", activeCanvas);
 }
 
 void WeatherBlockAP::decrementActiveCanvas() {
-  canvas[activeCanvas].resetSubCanvasOffset();
+  canvas[activeCanvas]->resetSubCanvasOffset();
   activeCanvas = max(activeCanvas - 1, 0);
   Serial.printf("[INFO] Setting activeCanvas to: %d\n", activeCanvas);
 }
 
 void WeatherBlockAP::incrementSubCanvas() {
-  canvas[activeCanvas].incrementSubCanvasOffset();
+  canvas[activeCanvas]->incrementSubCanvasOffset();
 }

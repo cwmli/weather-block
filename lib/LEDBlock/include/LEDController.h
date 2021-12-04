@@ -10,7 +10,7 @@
 #define LED_TYPE           WS2811
 #define CLR_ORDR           GRB
 
-#define DEFAULT_BRIGHTNESS 16
+#define DEFAULT_BRIGHTNESS 8
 #define MAX_BRIGHTNESS     64
 
 #define MAX_ELEMENTS 10

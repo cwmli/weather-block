@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "APIData.h"
+#include "APICanvas.h"
 #include "WeatherBlockAP.h"
 #include "URLDecode.h"
 
@@ -140,29 +141,35 @@ void WeatherBlockAPI::postSetBrightness() {
 
 void WeatherBlockAPI::getAllCanvasInfo() {
   String obj = "[";
-  for (uint8_t i = 0; i < API_LIMIT; i++) {
-    APIData data = ap->canvas[i].getAPIData();
+  for (uint8_t i = 0; i < CANVAS_LIMIT; i++) {
 
-    char timestr[32];
-    std::time_t secsSinceEpoch = (long) data.lastRefreshed;
-    struct std::tm ts;
-    ts = *std::localtime(&secsSinceEpoch);
-    std::strftime(timestr, sizeof(timestr), "%a %b %e, %R", &ts);
+    if (ap->canvas[i]->type() == CanvasType::API) {
+      APICanvas * canvas = (APICanvas *)(ap->canvas[i]);
+      APIData data = canvas->getAPIData();
 
-    String jsonString = i > 0 ? "," : "";
-    jsonString += "{\"name\": \"";
-    jsonString += data.name;
-    jsonString += "\", \"url\": \"";
-    jsonString += data.url;
-    jsonString += "\", \"isActive\": \"";
-    jsonString += data.isActive;
-    jsonString += "\", \"refreshes\": \"";
-    jsonString += data.refreshTime / 60; //in minutes
-    jsonString += "\", \"lastRefresh\": \"";
-    jsonString += timestr;
-    jsonString += "\"}";
+      char timestr[32];
+      std::time_t secsSinceEpoch = (long) data.lastRefreshed;
+      struct std::tm ts;
+      ts = *std::localtime(&secsSinceEpoch);
+      std::strftime(timestr, sizeof(timestr), "%a %b %e, %R", &ts);
 
-    obj += jsonString;
+      String jsonString = obj.startsWith("[{") ? "," : "";
+      jsonString += "{\"name\": \"";
+      jsonString += data.name;
+      jsonString += "\", \"index\": \"";
+      jsonString += i;
+      jsonString += "\", \"url\": \"";
+      jsonString += data.url;
+      jsonString += "\", \"isActive\": \"";
+      jsonString += data.isActive;
+      jsonString += "\", \"refreshes\": \"";
+      jsonString += data.refreshTime / 60; //in minutes
+      jsonString += "\", \"lastRefresh\": \"";
+      jsonString += timestr;
+      jsonString += "\"}";
+
+      obj += jsonString;
+    }
   }
   obj += "]";
   ap->server->send(200, "text/plain", obj);
@@ -174,7 +181,14 @@ void WeatherBlockAPI::getCanvasInfo() {
     ap->server->send(400, "text/plain", "400: Invalid Request");
   } else {
     int index = ap->server->arg("index").toInt();
-    APIData data = ap->canvas[index].getAPIData();
+
+    if (ap->canvas[index]->type() != CanvasType::API) {
+      ap->server->send(400, "text/plain", "400: Canvas is not API type");
+      return;
+    }
+
+    APICanvas * canvas = (APICanvas *)(ap->canvas[index]);
+    APIData data = canvas->getAPIData();
 
     char timestr[32];
     std::time_t secsSinceEpoch = (long) data.lastRefreshed;
@@ -196,7 +210,7 @@ void WeatherBlockAPI::getCanvasInfo() {
     jsonString += "\", \"parseRules\": \"";
     jsonString += data.parseRulesString();
     jsonString += "\", \"additionalElements\": \"";
-    jsonString += ap->canvas[index].getElementsString();
+    jsonString += canvas->getElementsString();
     jsonString += "\"}";
 
     ap->server->send(200, "text/plain", jsonString);
@@ -221,8 +235,16 @@ void WeatherBlockAPI::postUpdateCanvas() {
     ap->server->send(400, "text/plain", "400: Invalid Request");
   } else {
     int i = ap->server->arg("index").toInt();
-    Serial.printf("Forcing update for API: %s\n", ap->canvas[i].getAPIData().name.c_str());
-    ap->canvas[i].updateAPI(ap->timeClient.getEpochTime(), true);
+
+    if (ap->canvas[i]->type() != CanvasType::API) {
+      ap->server->send(400, "text/plain", "400: Canvas is not API type");
+      return;
+    }
+
+    APICanvas * canvas = (APICanvas *)(ap->canvas[i]);
+
+    Serial.printf("Forcing update for API: %s\n", canvas->getAPIData().name.c_str());
+    canvas->updateAPI(timeClient.getEpochTime(), true);
     ap->server->send(200, "text/plain", "200: Force updated API");
   }
 }
@@ -233,9 +255,17 @@ void WeatherBlockAPI::postResetCanvas() {
     ap->server->send(400, "text/plain", "400: Invalid Request");
   } else {
     int i = ap->server->arg("index").toInt();
-    Serial.printf("Removing API and Elements: %s\n", ap->canvas[i].getAPIData().name.c_str());
-    ap->canvas[i].resetAPI();
-    ap->canvas[i].resetElements();
+
+    if (ap->canvas[i]->type() != CanvasType::API) {
+      ap->server->send(400, "text/plain", "400: Canvas is not API type");
+      return;
+    }
+
+    APICanvas * canvas = (APICanvas *)(ap->canvas[i]);
+
+    Serial.printf("Removing API and Elements: %s\n", canvas->getAPIData().name.c_str());
+    canvas->resetAPI();
+    canvas->resetElements();
     ap->server->send(200, "text/plain", "200: Removed API");
   }
 }
@@ -246,8 +276,16 @@ void WeatherBlockAPI::postToggleCanvas() {
     ap->server->send(400, "text/plain", "400: Invalid Request");
   } else {
     int i = ap->server->arg("index").toInt();
-    Serial.printf("Toggling active status for API: %s\n", ap->canvas[i].getAPIData().name.c_str());
-    ap->canvas[i].toggleAPI();
+
+    if (ap->canvas[i]->type() != CanvasType::API) {
+      ap->server->send(400, "text/plain", "400: Canvas is not API type");
+      return;
+    }
+
+    APICanvas * canvas = (APICanvas *)(ap->canvas[i]);
+
+    Serial.printf("Toggling active status for API: %s\n", canvas->getAPIData().name.c_str());
+    canvas->toggleAPI();
     ap->server->send(200, "text/plain", "200: Toggled active status for API");
   }
 }
@@ -258,12 +296,20 @@ void WeatherBlockAPI::postSetCanvas() {
     ap->server->send(400, "text/plain", "400: Invalid Request");
   } else {
     int i = ap->server->arg("index").toInt();
-    Serial.printf("Setting data for API: %s\n", ap->canvas[i].getAPIData().name.c_str());
+
+    if (ap->canvas[i]->type() != CanvasType::API) {
+      ap->server->send(400, "text/plain", "400: Canvas is not API type");
+      return;
+    }
+
+    APICanvas * canvas = (APICanvas *)(ap->canvas[i]);
+
+    Serial.printf("Setting data for API: %s\n", canvas->getAPIData().name.c_str());
 
     char allrules[500]; 
     urldecode(ap->server->arg("parserules")).toCharArray(allrules, 500);
 
-    ap->canvas[i].setAPI(
+    canvas->setAPI(
       urldecode(ap->server->arg("name")),
       urldecode(ap->server->arg("url")),
       (long) ap->server->arg("refresh").toInt(),
@@ -273,7 +319,7 @@ void WeatherBlockAPI::postSetCanvas() {
 
     char elementset[500]; 
     urldecode(ap->server->arg("additionalelements")).toCharArray(elementset, 500);
-    ap->canvas[i].setElements(elementset);
+    canvas->setElements(elementset);
 
     ap->server->send(200, "text/plain", "200: Set data for API");
   }

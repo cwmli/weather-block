@@ -16,6 +16,9 @@
 #include "WeatherBlockAPI.h"
 #include "config.h"
 
+extern WiFiUDP ntpUDP;
+extern NTPClient timeClient;
+
 class WeatherBlockAP {
   friend class WeatherBlockAPI;
   
@@ -29,7 +32,7 @@ class WeatherBlockAP {
 
   LEDController controller;
   uint8_t activeCanvas = 0;
-  Canvas canvas[API_LIMIT];
+  Canvas * canvas[CANVAS_LIMIT];
 
 public:
 
