@@ -56,6 +56,7 @@ void WeatherBlockAP::init() {
   server->on("/canvasfupdate", HTTP_POST, [&](){ wbAPI.postUpdateCanvas(); });
 
   server->on("/wbdetails", HTTP_GET, [&]() { wbAPI.getWBDetails(); });
+  server->on("/setntpoffset", HTTP_POST, [&](){ wbAPI.postSetNTPOffset(); });
 
   server->on("/setbrightness", HTTP_POST, [&](){ wbAPI.postSetBrightness(); });
   server->on("/setactivecanvas", HTTP_POST, [&](){ wbAPI.postSetActiveCanvas(); });

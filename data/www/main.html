@@ -3,6 +3,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherBlock</title>
     <link rel="stylesheet" href="./wbstyles.min.css">
+    <style>
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
+    </style>
     <script defer src="./fontawesome.min.js"></script>
     <script defer src="./solid.min.js"></script>
   </head>
@@ -12,8 +24,8 @@
         <nav class="navbar has-background-link" role="navigation" aria-label="main navigation">
             <div class="navbar-menu">
               <div class="navbar-brand">
-                <div class="navbar-item has-text-white title is-3">
-                  WeatherBlock
+                <div class="navbar-item has-text-white title is-3 has-text-weight-light">
+                  Weather<b>Block</b>
                 </div>
               </div>
             </div>
@@ -53,6 +65,25 @@
                   <div class="field">
                     <div class="control is-small" id="accontrol">
                       <input type="number" class="input is-small is-link" name="activecanvas" min="0" max="2" onchange="updateActiveCanvas(event)">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field is-horizontal">
+                <div class="field-label">
+                  <label class="label">Timezone</label>
+                </div>
+                <div class="field-body">
+                  <div class="field has-addons">
+                    <div class="control is-small" id="ntpoffsetcontrol">
+                      <input type="number" class="input is-small is-link" name="ntpoffset">
+                    </div>
+                    <div class="control">
+                      <a class="button is-primary is-small" onclick="updateNTPOffset(event)">
+                        Set
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -125,6 +156,7 @@
           binputs[0].value = wbdetails.brightness;
           binputs[1].value = wbdetails.brightness;
           document.getElementsByName("activecanvas")[0].value = wbdetails.activecanvas;
+          document.getElementsByName("ntpoffset")[0].value = wbdetails.ntpoffset;
         }
       };
       xhttp.open("GET", "/wbdetails", true);
@@ -264,6 +296,21 @@
         xhttp.open("POST", "/setactivecanvas", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(`val=${acValue}`);
+      }
+
+      function updateNTPOffset(ev) {
+
+        document.getElementById("ntpoffsetcontrol").classList.toggle("is-loading");
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("ntpoffsetcontrol").classList.toggle("is-loading");
+          }
+        }
+        xhttp.open("POST", "/setntpoffset", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`offset=${document.getElementsByName("ntpoffset")[0].value}`);
       }
     </script>
   </body>

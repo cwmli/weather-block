@@ -122,9 +122,24 @@ void WeatherBlockAPI::getWBDetails() {
   jsonString += ap->controller.getBrightness();
   jsonString += "\", \"activecanvas\": \"";
   jsonString += ap->activeCanvas;
+  jsonString += "\", \"ntpoffset\": \"";
+  jsonString += ap->timeClientOffset;
   jsonString += "\"}";
 
   ap->server->send(200, "text/plain", jsonString);
+}
+
+void WeatherBlockAPI::postSetNTPOffset() {
+  if (!ap->server->hasArg("offset") || ap->server->arg("offset") == NULL) {
+    Serial.println("Invalid value for NTP offset");
+    ap->server->send(400, "text/plain", "400: Invalid Request");
+  } else {
+    int i = ap->server->arg("offset").toInt();
+    ap->timeClientOffset = i;
+    timeClient.setTimeOffset(i);
+    timeClient.forceUpdate();
+    ap->server->send(200, "text/plain", "200: Set NTP offset for clock");
+  }
 }
 
 void WeatherBlockAPI::postSetBrightness() {

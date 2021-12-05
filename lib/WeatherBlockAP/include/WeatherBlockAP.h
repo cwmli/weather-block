@@ -25,6 +25,7 @@ class WeatherBlockAP {
   WeatherBlockAPI wbAPI = WeatherBlockAPI(this);
   ESP8266WebServer * server = new ESP8266WebServer(80);
 
+  int timeClientOffset = NTP_DEFAULT_TIMEOFFSET;
   bool isTimeclientRunning = false;
 
   uint8_t currentState = IS_IDLING;

@@ -22,7 +22,9 @@ public:
   void getWiFiScan();
   void getPollWiFiScan();
 
+  // General controls
   void getWBDetails();
+  void postSetNTPOffset();
 
   // LED controller
   void postSetBrightness();
